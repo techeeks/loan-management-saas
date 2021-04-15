@@ -1,0 +1,9 @@
+# Disable PHP in public uploads folder
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5
+    RemoveType .php .phtml .php3 .php4 .php5
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
