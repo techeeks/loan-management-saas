@@ -58,17 +58,6 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header card-header-large bg-white">
-            <h4 class="card-header__title">{{ __('messages.latest_orders') }}</h4>
-        </div>
-
-        @include('super_admin.orders._table', ['orders' => $latest_orders])
-
-        <div class="card-footer text-center border-0">
-            <a class="text-muted" href="{{ route('super_admin.orders') }}">{{ __('messages.view_all') }}</a>
-        </div>
-    </div>
 @endsection
 
 @section('page_body_scripts')
