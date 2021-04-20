@@ -579,6 +579,14 @@ return [
     'custom_field_created' => 'Custom Field Created',
     'custom_field_updated' => 'Custom Field Updated',
     'please_select' => 'Please Select',
+    'loans'=>"Loan",
+    'create_loan_request'=>'Create Laon',
+    'loan_date'=>'Loan Date',
+    'return_date'=>'Return Date',
+    'edit_loan'=>"Edit Loan",
+
+
+
 
     // Messages
     'action_blocked_in_demo' => 'This action is blocked in demo',
@@ -620,6 +628,9 @@ return [
     'expense_updated' => 'Expense Updated',
     'expense_deleted' => 'Expense Deleted',
     'invoice_added' => 'Invoice Added',
+    'loan_added' => 'Loan Added',
+    'loan_updated'=>"Loan Updated",
+    'loan_deleted'=>"Loan Deleted",
     'invoice_updated' => 'Invoice Updated',
     'invoice_status_updated' => 'Invoice Status Updated',
     'invoice_deleted' => 'Invoice Deleted',

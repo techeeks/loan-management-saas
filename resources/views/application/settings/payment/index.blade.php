@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-md-6">
+                                {{-- <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label for="payment_auto_archive">{{ __('messages.auto_archive') }}</label><br>
                                         <div class="custom-control custom-checkbox-toggle custom-control-inline mr-1">
@@ -53,7 +53,7 @@
                                             {{ __('messages.auto_archive_description') }}
                                         </small>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="row">
@@ -65,10 +65,10 @@
                                 </div>
                             </div> 
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="payment_footer">{{ __('messages.footer') }}</label>
                                 <textarea name="payment_footer" class="form-control" rows="4" placeholder="{{ __('messages.footer') }}">{{ $currentCompany->getSetting('payment_footer') }}</textarea>
-                            </div>
+                            </div> --}}
             
                             <div class="form-group text-right mt-4">
                                 <button type="submit" class="btn btn-primary">{{ __('messages.update_settings') }}</button>
@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="card card-form">
+            {{-- <div class="card card-form">
                 <div class="row no-gutters">
                     <div class="col card-form__body card-body bg-white">
 
@@ -92,7 +92,7 @@
 
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="card card-form">
                 <div class="row no-gutters">

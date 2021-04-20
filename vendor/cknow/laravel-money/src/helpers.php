@@ -28,6 +28,10 @@ if (!function_exists('money')) {
         return new Cknow\Money\Money($amount, new Money\Currency($currency ?: Cknow\Money\Money::getCurrency()));
     }
 }
+function currencyFormat($amount,$currency)
+{
+    return $currency.''.number_format($amount, 2);
+}
 
 if (!function_exists('money_min')) {
     /**

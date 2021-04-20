@@ -23,9 +23,9 @@ class CheckInstalled
         } 
 
         // Check if the application needs to upgrade
-        if (!$this->alreadyUpdated()) {
-            return redirect('/update');
-        }
+        // if (!$this->alreadyUpdated()) {
+        //     return redirect('/update');
+        // }
 
         return $next($request);
     }

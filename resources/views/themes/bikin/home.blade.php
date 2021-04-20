@@ -229,24 +229,8 @@
                   @endif
                   <ul>
                     <li>{{ __('bikin.x_customers', ['count' => $plan->getFeatureBySlug('customers')->value]) }}</li>
-                    <li>{{ __('bikin.x_products', ['count' => $plan->getFeatureBySlug('products')->value]) }}</li>
-                    <li>{{ __('bikin.x_invoices', ['count' => $plan->getFeatureBySlug('invoices_per_month')->value]) }}</li>
-                    <li>{{ __('bikin.x_estimates', ['count' => $plan->getFeatureBySlug('estimates_per_month')->value]) }}</li>
-
-                    @if($plan->getFeatureBySlug('view_reports')->value)
-                      <li>{{ __('bikin.custom_reports') }}</li>
-                    @else
-                      <li class="na">{{ __('bikin.custom_reports') }}</li>
-                    @endif
-
-                    @if($plan->getFeatureBySlug('advertisement_on_mails')->value)
-                      <li>{{ __('bikin.advertisement_on_mails') }}</li>
-                    @else
-                      <li class="na">{{ __('bikin.advertisement_on_mails') }}</li>
-                    @endif
-
-                    @if($plan->hasTrial())
-                      <li>{{ __('bikin.trial_text', ['day' => $plan->trial_period]) }}</li>
+                    @if(isset($plan->getFeatureBySlug('members_per_month')->value))
+                    <li>{{ __('bikin.x_members', ['count' => $plan->getFeatureBySlug('members_per_month')->value]) }}</li>
                     @endif
                   </ul>
                   <div class="btn-wrap">

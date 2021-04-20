@@ -34,6 +34,8 @@
    
     @include('layouts._js')
     @include('layouts._flash')
+    @stack('scripts')
+    @stack('page_script')
 </body>
 
 </html>

@@ -26,8 +26,6 @@ class Update extends FormRequest
         return [
             'payment_prefix' => 'required|string|max:190',
             'payment_color' => 'required|string|max:190',
-            'payment_auto_archive' => 'required|boolean',
-            'payment_footer' => 'nullable|string',
         ];
     }
 

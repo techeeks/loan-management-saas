@@ -125,6 +125,16 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
     Route::get('/invoices/{invoice}/mark/{status?}', 'InvoiceController@mark')->name('invoices.mark');
     Route::get('/invoices/{tab?}', 'InvoiceController@index')->name('invoices');
 
+
+    Route::group(['prefix' =>'/loan-requests'], function () {
+        Route::get('/', 'LoanRequestController@index' )->name('loan.requests');
+        Route::post('save', 'LoanRequestController@store' )->name('loan.requests.store');
+        Route::get('{id}/edit', 'LoanRequestController@edit' )->name('loan.requests.edit');
+        Route::get('{id}/delete', 'LoanRequestController@delete' )->name('loan.requests.delete');
+        Route::get('{id}/add-payment', 'LoanRequestController@newPayment' )->name('loan.requests.add.payment');
+        Route::post('{id}/update', 'LoanRequestController@update' )->name('loan.requests.update');
+        Route::get('add-new', 'LoanRequestController@add' )->name('loan.requests.create');
+    });
     // Estimates
     Route::get('/estimates/create', 'EstimateController@create')->name('estimates.create');
     Route::post('/estimates/create', 'EstimateController@store')->name('estimates.store');
@@ -137,6 +147,14 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
     Route::get('/estimates/{tab?}', 'EstimateController@index')->name('estimates');
 
     // Payments
+    Route::group(['prefix' =>'/loan-payments'], function () {
+        Route::get('/', 'LoanPaymentController@index')->name('loan.payments');
+        Route::get('create', 'LoanPaymentController@create')->name('loan.payments.create');
+        Route::post('create', 'LoanPaymentController@store')->name('loan.payments.store');
+        Route::get('{payment}/edit', 'LoanPaymentController@edit')->name('loan.payments.edit');
+        Route::post('{payment}/edit', 'LoanPaymentController@update')->name('loan.payments.update');
+        Route::get('{payment}/delete', 'LoanPaymentController@delete')->name('loan.payments.delete');
+    });
     Route::get('/payments', 'PaymentController@index')->name('payments');
     Route::get('/payments/create', 'PaymentController@create')->name('payments.create');
     Route::post('/payments/create', 'PaymentController@store')->name('payments.store');
