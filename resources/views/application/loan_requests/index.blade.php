@@ -29,8 +29,9 @@
         <table class="table table-xl mb-0 thead-border-top-0 table-striped">
             <thead>
                 <tr>
+                    <th>{{ __('messages.reference_number') }}</th>
                     <th>{{ __('messages.customer') }}</th>
-                    <th>{{ __('messages.currency') }}</th>
+                   
                     <th>{{ __('messages.amount') }}</th>
                     <th>{{ __('messages.loan_date') }}</th>
                     <th>{{ __('messages.return_date') }}</th>
@@ -41,22 +42,23 @@
             <tbody class="list" id="loans">
                 @foreach ($loans as $loan)
                     <tr>
-                        <td class="h6">
+                        <td>
+                            {{ $loan->reference_number }}
+                        </td>
+                        <td>
                             {{ $loan->customer->display_name}}
                         </td>
-                        <td class="h6">
-                            {{ $loan->currency->name  }} {{ ($loan->currency->code) }}
-                        </td>
-                        <td class="h6">
+                       
+                        <td>
                             {{ currencyFormat($loan->amount, $loan->currency->symbol) }}
                         </td>
-                        <td class="h6">
+                        <td>
                             {{ $loan->loan_date}}
                         </td>
-                        <td class="h6">
+                        <td>
                             {{ $loan->return_date}}
                         </td>
-                        <td class="h6">
+                        <td>
                             @if($loan->status == 'Pending')
                                 <div class="badge badge-warning fs-0-9rem">
                                     {{ $loan->status }}
@@ -71,16 +73,18 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="h6 inline-block">
+                        <td class="h6  d-inline-flex">
                             <a href="{{ route('loan.requests.edit', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
                                 <i class="material-icons icon-16pt">edit</i>
                             </a>
                             <a href="{{ route('loan.requests.delete', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
                                 <i class="material-icons icon-16pt">delete</i>
                             </a>
-                            <a href="{{ route('payments.create', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
-                                <i class="material-icons icon-16pt">payment</i>
-                            </a>
+                            @if($loan->status!="Paid")
+                                <a href="{{ route('loan.payments.create', ['loan_id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
+                                    <i class="material-icons icon-16pt">payment</i>
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

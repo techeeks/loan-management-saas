@@ -663,4 +663,7 @@ return [
     'payment_exists' => 'Payment Number is already exists.',
     'vendor_exists' => 'Vendor with this email is already exist.',
     'fix_errors' => 'An error occured. Please fix errors below to continue.',
+    'transaction_reference'=>'Transcation Reference',
+    'reference_number'=>'Reference Number',
+    'loans'=>"Loans",
 ];

@@ -41,7 +41,13 @@
             <span class="sidebar-menu-text">{{ __('messages.tax_types') }}</span>
         </a>
     </li>
-
+    <li class="sidebar-menu-item">
+        <a href="{{ route('settings.payment', ['company_uid' => $currentCompany->uid]) }}" class="sidebar-menu-button {{ $tab == 'tax_types' ? 'text-primary' : 'text-secondary' }}">
+            <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">payment</i>
+            <span class="sidebar-menu-text">{{ __('messages.tax_types') }}</span>
+        </a>
+    </li>
+   
     <li class="sidebar-menu-item">
         <a href="{{ route('settings.custom_fields', ['company_uid' => $currentCompany->uid]) }}" class="sidebar-menu-button {{ $tab == 'custom_fields' ? 'text-primary' : 'text-secondary' }}">
             <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">text_fields</i>

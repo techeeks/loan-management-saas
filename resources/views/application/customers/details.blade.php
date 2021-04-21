@@ -38,11 +38,6 @@
                     {{ $customer->displayLongAddress('billing') }}
                 </p>
             </div>
-            <div class="col-12 col-md-3 mt-4 mb-4">
-                <h5>{{ __('messages.standing') }}</h5>
-                <strong>{{ __('messages.due_amount') }}:</strong> 
-                <p class="h5 mt-1">{{ money($customer->invoice_due_amount, $customer->currency->code)  }}</p>
-            </div>
             <div class="col-12 col-md-3 text-right mt-4 mb-4"> 
                 <a href="{{ route('customers.edit', ['customer' => $customer->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-primary">
                     <i class="material-icons">edit</i> 

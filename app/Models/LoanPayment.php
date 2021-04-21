@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasCustomFields;
+use App\Traits\UUIDTrait;
+use Carbon\Carbon;
 
 class LoanPayment extends Model
 {
     use SoftDeletes;
+    // use UUIDTrait;
+    use HasCustomFields;
     protected $fillable = [
         'company_id',
         'loan_id',
@@ -27,6 +32,20 @@ class LoanPayment extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    private function strposX($haystack, $needle, $number)
+    {
+        if ($number == '1') {
+            return strpos($haystack, $needle);
+        } elseif ($number > '1') {
+            return strpos(
+                $haystack,
+                $needle,
+                $this->strposX($haystack, $needle, $number - 1) + strlen($needle)
+            );
+        } else {
+            return error_log('Error: Value for parameter $number is out of range');
+        }
+    }
     public function payment_method()
     {
         return $this->belongsTo(PaymentMethod::class);
@@ -38,16 +57,17 @@ class LoanPayment extends Model
     public static function getNextPaymentNumber($company_id, $prefix)
     {
         // Get the last created order
-        $payment = LoanPayment::findByCompany($company_id)->where('payment_number', 'LIKE', $prefix . '-%')
-                    ->orderBy('created_at', 'desc')
+        $payment = LoanPayment::orderBy('id', 'desc')
                     ->first();
+            // dd($payment);exit;
         if (!$payment) {
             // We get here if there is no order at all
             // If there is no number set it to 0, which will be 1 at the end.
             $number = 0;
         } else {
             $number = explode("-", $payment->payment_number);
-            $number = $number[1];
+            // dd($number);
+            $number = $number[0];
         }
         // If we have ORD000001 in the database then we only want the number
         // So the substr returns this 000001

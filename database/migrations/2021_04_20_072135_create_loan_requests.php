@@ -17,6 +17,7 @@ class CreateLoanRequests extends Migration
             $table->id();
             $table->float('amount');
             $table->date('loan_date');
+            $table->string('reference_number');
             $table->date('return_date');
             $table->enum('status',['Pending','Paid','Overdue']);
             $table->text('description');

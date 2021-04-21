@@ -149,8 +149,8 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
     // Payments
     Route::group(['prefix' =>'/loan-payments'], function () {
         Route::get('/', 'LoanPaymentController@index')->name('loan.payments');
-        Route::get('create', 'LoanPaymentController@create')->name('loan.payments.create');
-        Route::post('create', 'LoanPaymentController@store')->name('loan.payments.store');
+        Route::get('{loan_id}/create', 'LoanPaymentController@create')->name('loan.payments.create');
+        Route::post('{loan_id}/create', 'LoanPaymentController@store')->name('loan.payments.store');
         Route::get('{payment}/edit', 'LoanPaymentController@edit')->name('loan.payments.edit');
         Route::post('{payment}/edit', 'LoanPaymentController@update')->name('loan.payments.update');
         Route::get('{payment}/delete', 'LoanPaymentController@delete')->name('loan.payments.delete');

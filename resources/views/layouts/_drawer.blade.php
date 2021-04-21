@@ -89,6 +89,18 @@
                                             <span class="sidebar-menu-text">{{ __('messages.customers') }}</span>
                                         </a>
                                     </li>
+                                    <li class="sidebar-menu-item {{ $page == 'Loan' ? 'active' : ''}}">
+                                        <a class="sidebar-menu-button" href="{{ route('loan.requests', ['company_uid' => $currentCompany->uid]) }}">
+                                            <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">book</i>
+                                            <span class="sidebar-menu-text">{{ __('messages.loans') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-menu-item {{ $page == 'Loan' ? 'active' : ''}}">
+                                        <a class="sidebar-menu-button" href="{{ route('loan.payments', ['company_uid' => $currentCompany->uid]) }}">
+                                            <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">payment</i>
+                                            <span class="sidebar-menu-text">{{ __('messages.payments') }}</span>
+                                        </a>
+                                    </li>
                                     <li class="sidebar-menu-item {{ $page == 'settings' ? 'active' : ''}}">
                                         <a class="sidebar-menu-button" href="{{ route('settings.account', ['company_uid' => $currentCompany->uid]) }}">
                                             <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">settings</i>

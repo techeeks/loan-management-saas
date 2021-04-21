@@ -15,18 +15,19 @@ class LoanPaymentController extends Controller
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $query=LoanRequest::findByCompany($currentCompany->id)->orderBy('id','DESC');
+        $query=LoanPayment::findByCompany($currentCompany->id)->orderBy('id','DESC');
         // Query Invoices by Company and Tab
-
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
         // Apply Filters and Paginate
-        $loans = QueryBuilder::for($query)
+        $payments = QueryBuilder::for($query)
             ->paginate()
             ->appends(request()->query());
-            return view('application..loan_requests.index', [
-                'loans' => $loans,
+            return view('application.loan_payments.index', [
+                'payments' => $payments,
+                'payment_prefix'=>$payment_prefix,
         ]);
     }
-    public function add(Request $request)
+    public function create(Request $request)
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
@@ -41,67 +42,44 @@ class LoanPaymentController extends Controller
         $payment = new LoanPayment();
         $payment->payment_number = $next_payment_number ?? 0;
         $payment->company_id = $currentCompany->id;
-        $payment->loan_id=$request->id;
-
-
-        return view('application.payments.create', [
+        $payment->loan_id=$request->loan_id;
+        $loan=LoanRequest::find($request->loan_id);
+        $payment->loan_amount=$loan->amount;
+        $paymentDetails=LoanPayment::where('loan_id',$request->loan_id)->sum('amount');
+        if($paymentDetails){
+            $payment->loan_amount=$payment->loan_amount-$paymentDetails;
+        }
+        return view('application.loan_payments.create', [
             'payment' => $payment
         ]);
-    }
-    public function edit(Request $request)
-    {
-        $user = $request->user();
-
-        $currentCompany = $user->currentCompany();
-        $loan=LoanRequest::findOrFail($request->id);
-        $customers=Customer::all()->sortByDesc('id');
-        // echo '<pre>',print_r($loan);exit;
-        return view('application.loan_requests.edit',compact('customers','loan'));
-    }
-    public function update(Request $request)
-    {
-        $user = $request->user();
-        $currentCompany = $user->currentCompany();
-        $request->validate([
-            'customer_id' => 'required',
-            'currency_id' => 'required',
-            'amount'=>'required|numeric',
-            'loan_date'=>'required|date',
-            'return_date'=>'required|date|after:loan_date',
-            'status'=>'required',
-            'description'=>'required'
-        ]);
-        $data=$request->all();
-        $loan=LoanRequest::find($request->id);
-        $loan->update($data);
-        session()->flash('alert-success', __('messages.loan_updated'));
-        return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
     }
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required',
-            'currency_id' => 'required',
-            'amount'=>'required|numeric',
-            'loan_date'=>'required|date',
-            'return_date'=>'required|date|after:loan_date',
-            'status'=>'required',
-            'description'=>'required'
+            'payment_number' => 'required',
+            'payment_method_id' => 'required',
+            'amount'=>'required|numeric|min:1',
+            'transaction_reference'=>'required',
+            'payment_date'=>'required|date',
         ]);
         $user = $request->user();
         $currentCompany = $user->currentCompany();
         $data=$request->all();
         $data["company_id"]=$currentCompany->id;
-        $loan=LoanRequest::create($data);
-        session()->flash('alert-success', __('messages.loan_added'));
-        return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
-    }
-    public function delete(Request $request)
-    {
-        $loan=LoanRequest::where('id',$request->id)->delete();
-        $user = $request->user();
-        $currentCompany = $user->currentCompany();
-        session()->flash('alert-success', __('messages.loan_deleted'));
-        return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
+        $data["loan_id"]=$request->loan_id;
+        $payment=LoanPayment::create($data);
+        $loan=LoanRequest::find($request->loan_id);
+        $paymentDetails=LoanPayment::where('loan_id',$request->loan_id)->sum('amount');
+        if($paymentDetails){
+           
+           if($loan->amount-$paymentDetails==0)
+           {
+                $loan->status="Paid";
+                $loan->save();
+           }
+        }
+        // exit;
+        session()->flash('alert-success', __('messages.payment_added'));
+        return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
     }
 }

@@ -16,9 +16,24 @@ class LoanRequest extends Model
         'currency_id',
         'return_date',
         'status',
-        'description'
+        'description',
+        'reference_number'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ecu) {
+            $last_number = LoanRequest::max('id') + 1;
+            $ecu->reference_number = 'LN' . '-' . str_pad(
+                $last_number,
+                6, // as per your requirement.
+                '0',
+                STR_PAD_LEFT
+            );
+        });
+    }
     /**
      * Automatically cast attributes to given types
      * 
