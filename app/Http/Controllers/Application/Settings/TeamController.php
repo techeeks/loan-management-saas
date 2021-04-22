@@ -30,13 +30,12 @@ class TeamController extends Controller
      */
     public function createMember(Request $request)
     {
+       
         $member = new User();
-
         // Fill model with old input
         if (!empty($request->old())) {
             $member->fill($request->old());
         }
-
         return view('application.settings.team.create_member', [
             'member' => $member,
         ]);
@@ -60,6 +59,13 @@ class TeamController extends Controller
             return redirect()->route('settings.team', ['company_uid' => $currentCompany->uid]);
         };
 
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $canAdd = $currentCompany->subscription('main')->canUseFeature('members_per_month');
+        if (!$canAdd) {
+            session()->flash('alert-danger', __('messages.you_have_reached_the_limit'));
+            return redirect()->route('setting.team', ['company_uid' => $currentCompany->uid]);
+        }
         // Create new Member
         $member = User::create([
             'first_name' => $request->first_name,
@@ -81,7 +87,7 @@ class TeamController extends Controller
             $path = $request->avatar->storeAs('avatars', 'avatar-'. $member->id .'.'.$request->avatar->getClientOriginalExtension(), 'public_dir');
             $member->setSetting('avatar', '/uploads/'.$path);
         }
-
+        $currentCompany->subscription('main')->recordFeatureUsage('members_per_month');
         session()->flash('alert-success', __('messages.team_member_added'));
         return redirect()->route('settings.team', ['company_uid' => $currentCompany->uid]);
     }

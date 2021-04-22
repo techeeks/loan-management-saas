@@ -47,9 +47,8 @@
                             </p>
                         </div>
                         <div class="font-weight-bold">{{ __('messages.customers') }}: <p class="font-weight-normal">{{ $subscription->getFeatureUsage('customers') ?? 0 }} / {{ $subscription->getFeatureValue('customers') ?? 0 }}</p></div>
-                        <div class="font-weight-bold">{{ __('messages.products') }}: <p class="font-weight-normal">{{ $subscription->getFeatureUsage('products') ?? 0 }} / {{ $subscription->getFeatureValue('products') ?? 0 }}</p></div>
-                        <div class="font-weight-bold">{{ __('messages.estimates_per_month') }}: <p class="font-weight-normal">{{ $subscription->getFeatureUsage('estimates_per_month') ?? 0 }} / {{ $subscription->getFeatureValue('estimates_per_month') ?? 0 }}</p></div>
-                        <div class="font-weight-bold">{{ __('messages.invoices_per_month') }}: <p class="font-weight-normal">{{ $subscription->getFeatureUsage('invoices_per_month') ?? 0}} / {{ $subscription->getFeatureValue('invoices_per_month') ?? 0 }}</p></div>
+                        <div class="font-weight-bold">Members: <p class="font-weight-normal">{{ $subscription->getFeatureUsage('members_per_month') ?? 0 }} / {{ $subscription->getFeatureValue('members_per_month') ?? 0 }}</p></div>
+                       
                     </div>
                 </div>
             </div>

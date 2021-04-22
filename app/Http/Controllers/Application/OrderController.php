@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Application;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Plan;
+use App\Models\SubscriptionVoucher;
 use App\Models\SystemSetting;
 use App\Services\Gateways\PaypalExpress;
 use App\Services\Gateways\Razorpay;
@@ -93,6 +94,36 @@ class OrderController extends Controller
         ]);
     }
 
+    public function AddVoucher(Request $request)
+    {
+      
+        // Find plan
+        $plan = Plan::where('slug', $request->plan)->firstOrFail();
+
+        // Auth User & Company
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+ 
+        // If the plan is free subscribe user directly
+      
+            // First cancel current subscription if any
+
+            // Redirect user to dashboard
+            
+        // Razorpay Setting
+       
+        $orderId = $currentCompany->id.strtoupper(str_replace('.', '', uniqid('', true)));
+       
+ 
+            // Get callback url
+           
+        // Return checkout form
+        return view('application.order.voucher_checkout', [
+            'plan' => $plan,
+            'orderId' => $orderId,
+        ]);
+    }
+
     /**
      * Paypal Payment
      *
@@ -123,8 +154,8 @@ class OrderController extends Controller
         }
  
         // Something else happend, go back to invoice details
-        session()->flash('message-danger', $response->getMessage());
-        return redirect()->route('order.checkout', ['plan' => $plan->id]);
+        session()->flash('alert-error', $response->getMessage());
+        return redirect()->route('order.checkout', ['plan' => $plan->slug]);
     }
 
     /**
@@ -181,13 +212,13 @@ class OrderController extends Controller
                 $currentCompany->newSubscription('main', $plan);
             }
      
-            session()->flash('message-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
+            session()->flash('alert-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
             return redirect()->route('home');
         }
 
         // Something else happend, go back to invoice details
-        session()->flash('message-danger', $response->getMessage());
-        return redirect()->route('order.checkout', ['plan' => $plan->id]);
+        session()->flash('alert-danger', $response->getMessage());
+        return redirect()->route('order.checkout', ['plan' => $plan->slug]);
     }
 
     /**
@@ -202,8 +233,8 @@ class OrderController extends Controller
         // Plan
         $plan = Plan::where('slug', $request->plan)->firstOrFail();
 
-        session()->flash('message-danger', __('messages.payment_cancelled_paypal'));
-        return redirect()->route('order.checkout', ['plan' => $plan->id]);
+        session()->flash('alert-danger', __('messages.payment_cancelled_paypal'));
+        return redirect()->route('order.checkout', ['plan' => $plan->slug]);
     }
 
     /**
@@ -261,7 +292,7 @@ class OrderController extends Controller
                 $currentCompany->newSubscription('main', $plan);
             }
 
-            session()->flash('message-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
+            session()->flash('alert-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
             return redirect()->route('home');
         } 
         // If stripe needs additional redirect like 3d secure then redirect the customer
@@ -270,7 +301,7 @@ class OrderController extends Controller
         }
         
         // Something else happend, go back to invoice details
-        session()->flash('message-danger', $response->getMessage());
+        session()->flash('alert-error', $response->getMessage());
         return redirect()->route('order.checkout', ['plan' => $plan->id]);
     }
 
@@ -332,6 +363,45 @@ class OrderController extends Controller
         // Something else happend, go back to invoice details
         session()->flash('message-danger', $response->getMessage());
         return redirect()->route('order.checkout', ['plan' => $plan->id]);
+    }
+    public function voucher(Request $request)
+    {
+        $request->validate([
+            'voucher_code'=>'required',
+        ]);
+        $plan = Plan::where('slug', $request->plan)->firstOrFail();
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $voucher=SubscriptionVoucher::where(['company_id'=>$currentCompany->id,'voucher_code'=>$request->voucher_code])->first();
+        if($voucher){
+            $order = Order::create([
+                'company_id' => $currentCompany->id,
+                'user_id' => $user->id,
+                'plan_id' => $voucher->plan->id,
+                'card_number' => '',
+                'card_exp_month' => '',
+                'card_exp_year' => '',
+                'price' => $voucher->plan->price,
+                'currency' =>$voucher->plan->currency,
+                'transaction_id' => $voucher->transaction_id,
+                'payment_type' => 'Voucher',
+                'payment_status' => 'COMPLETED',
+                'order_id' => $request->orderId,
+            ]);
+            if ($currentCompany->subscription('main')) {
+                $currentCompany->subscription('main')->changePlan($voucher->plan);
+            } else {
+                $currentCompany->newSubscription('main', $voucher->plan);
+            }
+            session()->flash('alert-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
+            return redirect()->route('home');
+        }
+        else{
+            // echo "exitt";exit;
+            session()->flash('alert-danger', 'Invalid Voucher');
+            return redirect()->route('order.add-voucher', ['company_uid' => $currentCompany->uid, 'plan' => $plan->slug]);
+        }
+          
     }
 
     /**

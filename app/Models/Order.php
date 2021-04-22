@@ -25,6 +25,7 @@ class Order extends Model
         'payment_type',
         'payment_status',
         'receipt',
+        'voucher_id'
     ];
 
     /**
@@ -55,5 +56,9 @@ class Order extends Model
     public function plan()
     {
         return $this->belongsTo(Plan::class);
+    }
+    public function voucher()
+    {
+        return $this->belongsTo(SubscriptionVoucher::class);
     }
 }

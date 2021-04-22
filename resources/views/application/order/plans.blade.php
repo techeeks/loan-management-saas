@@ -38,6 +38,7 @@
                             @else
                                 <a href="{{ route('order.checkout', ['company_uid' => $currentCompany->uid, 'plan' => $plan->slug]) }}" class="btn btn-success mt-auto">{{ __('messages.purchase') }}</a>
                             @endif
+                            <a href="{{ route('order.add-voucher', ['company_uid' => $currentCompany->uid, 'plan' => $plan->slug]) }}" class="btn btn-warning mt-2"> Subscribe with Voucher </a>
                         </div>
                     </div>
                 </div>

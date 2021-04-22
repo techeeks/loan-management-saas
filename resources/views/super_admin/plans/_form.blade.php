@@ -45,15 +45,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-group required">
-                        <label for="order">{{ __('messages.order') }}</label>
-                        <input name="order" type="number" class="form-control" placeholder="{{ __('messages.order') }}" value="{{ $plan->order }}">
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

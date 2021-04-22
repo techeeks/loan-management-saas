@@ -6,7 +6,6 @@
                     <th class="w-30px" class="text-center">{{ __('messages.#id') }}</th>
                     <th>{{ __('messages.display_name') }}</th>
                     <th>{{ __('messages.contact_name') }}</th>
-                    <th class="text-center">{{ __('messages.amount_due') }}</th>
                     <th class="text-center width: 120px;">{{ __('messages.created_at') }}</th>
                     <th class="w-50px">{{ __('messages.view') }}</th>
                 </tr>
@@ -46,9 +45,7 @@
                             </div>
                             
                         </td>
-                        <td class="text-center">
-                            <strong>{{ money($customer->invoice_due_amount, $customer->currency->code) }}</strong>
-                        </td>
+                        
                         <td class="text-center"><i class="material-icons icon-16pt text-muted-light mr-1">today</i> {{ $customer->created_at->format('Y-m-d') }}</td>
                         <td><a href="{{ route('customers.details', ['customer' => $customer->id,'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link"><i class="material-icons icon-16pt">arrow_forward</i></a> </td>
                     </tr>

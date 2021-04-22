@@ -36,6 +36,15 @@ Route::group(['namespace' => 'SuperAdmin', 'prefix' => '/admin', 'middleware' =>
     Route::post('/plans/{plan}/edit', 'PlanController@update')->name('super_admin.plans.update');
     Route::get('/plans/{plan}/delete', 'PlanController@delete')->name('super_admin.plans.delete');
 
+    Route::group(['prefix' =>'/subscription-vouchers'], function () {
+        Route::get('/', 'SubscriptionVoucherController@index')->name('super_admin.vouchers');
+        Route::get('create', 'SubscriptionVoucherController@add')->name('super_admin.vouchers.create');
+        Route::post('save', 'SubscriptionVoucherController@store')->name('super_admin.vouchers.store');
+        Route::get('{voucher}/edit', 'SubscriptionVoucherController@edit')->name('super_admin.vouchers.edit');
+        Route::post('{voucher}/update', 'SubscriptionVoucherController@update')->name('super_admin.vouchers.update');
+        Route::get('{voucher}/delete', 'SubscriptionVoucherController@delete')->name('super_admin.vouchers.delete');
+    });
+
     // Subscriptions
     Route::get('/subscriptions', 'SubscriptionController@index')->name('super_admin.subscriptions');
     Route::get('/subscriptions/{subscription}/cancel', 'SubscriptionController@cancel')->name('super_admin.subscriptions.cancel');
@@ -288,6 +297,7 @@ Route::group(['namespace' => 'Application', 'middleware' => ['installed', 'auth'
    // Orders
     Route::get('/order/plans', 'OrderController@plans')->name('order.plans');
     Route::get('/order/checkout/{plan}', 'OrderController@checkout')->name('order.checkout');
+    Route::get('/order/voucher-subscribe/{plan}', 'OrderController@AddVoucher')->name('order.add-voucher');
 
     // PaypalExpress Checkout
     Route::post('/order/checkout/{plan}/paypal/payment', 'OrderController@paypal')->name('order.payment.paypal');
@@ -296,6 +306,7 @@ Route::group(['namespace' => 'Application', 'middleware' => ['installed', 'auth'
 
     // Razorpay Checkout
     Route::post('/order/checkout/{plan}/razorpay', 'OrderController@razorpay')->name('order.payment.razorpay');
+    Route::post('/order/checkout/{plan}/voucher', 'OrderController@voucher')->name('order.payment.voucher');
 
     // Stripe Checkout
     Route::post('/order/checkout/{plan}/stripe', 'OrderController@stripe')->name('order.payment.stripe');

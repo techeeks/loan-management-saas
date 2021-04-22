@@ -14,15 +14,6 @@
                         <input name="filter[contact_name]" type="text" class="form-control" value="{{ isset(Request::get("filter")['contact_name']) ? Request::get("filter")['contact_name'] : '' }}" placeholder="{{ __('messages.search') }}">
                     </div>
                 </div>
-                <div class="col-sm-auto">
-                    <div class="form-group">
-                        <label for="filter[has_unpaid]">{{ __('messages.has_unpaid_invoice') }}</label>
-                        <div class="custom-control custom-checkbox mt-sm-2">
-                            <input id="filter[has_unpaid]" name="filter[has_unpaid]" type="checkbox" {{ isset(Request::get("filter")['has_unpaid']) ? 'checked=""' : '' }} value="true" class="custom-control-input" >
-                            <label class="custom-control-label" for="filter[has_unpaid]">{{ __('messages.yes') }}</label>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="row mb-2">
                 <div class="col-12">

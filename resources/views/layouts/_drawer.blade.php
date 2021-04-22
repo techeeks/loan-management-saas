@@ -33,6 +33,17 @@
                                             <span class="sidebar-menu-text">{{ __('messages.subscriptions') }}</span>
                                         </a>
                                     </li>
+                                    <li class="sidebar-menu-item {{ $page == 'super_admin.vouchers' ? 'active' : ''}}">
+                                        <a class="sidebar-menu-button" href="{{ route('super_admin.vouchers') }}">
+                                            <span class="sidebar-menu-text">{{ __('messages.vouchers') }}</span>
+                                        </a>
+                                    </li>
+                                   
+                                    <li class="sidebar-menu-item {{ $page == 'super_admin.orders' ? 'active' : ''}}">
+                                        <a class="sidebar-menu-button" href="{{ route('super_admin.orders') }}">
+                                            <span class="sidebar-menu-text">{{ __('messages.payment') }}</span>
+                                        </a>
+                                    </li>
                                    
                                     <li class="sidebar-menu-item {{ str_contains($page, 'super_admin.settings.') ? 'active open' : ''}}">
                                         <a class="sidebar-menu-button {{ str_contains($page, 'super_admin.settings.') ? '' : 'collapsed'}}" data-toggle="collapse" href="#settings_menu" aria-expanded="false">
@@ -43,6 +54,11 @@
                                             <li class="sidebar-menu-item {{ $page == 'super_admin.settings.application' ? 'active' : ''}}">
                                                 <a class="sidebar-menu-button" href="{{ route('super_admin.settings.application') }}">
                                                     <span class="sidebar-menu-text">{{ __('messages.application_settings') }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-menu-item {{ $page == 'super_admin.settings.payment' ? 'active' : ''}}">
+                                                <a class="sidebar-menu-button" href="{{ route('super_admin.settings.payment') }}">
+                                                    <span class="sidebar-menu-text">{{ __('messages.payment') }}</span>
                                                 </a>
                                             </li>
                                             <li class="sidebar-menu-item {{ $page == 'super_admin.settings.mail' ? 'active' : ''}}">

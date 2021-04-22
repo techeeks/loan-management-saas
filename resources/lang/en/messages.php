@@ -420,6 +420,9 @@ return [
     'cancel_subscription' => 'Cancel Subscription',
     'edit_plan' => 'Edit Plan',
     'save_plan' => 'Save Plan',
+    'voucher_created'=>'Voucher Created',
+    'voucher_updated'=>"Voucher Updated",
+    'voucher_deleted'=>"Voucher Deleted",
     'invoice_interval' => 'Plan Interval',
     'month' => 'Month',
     'plan_feature_information' => 'Plan Features',
@@ -666,4 +669,12 @@ return [
     'transaction_reference'=>'Transcation Reference',
     'reference_number'=>'Reference Number',
     'loans'=>"Loans",
+    'pay_with_voucher'=>"Pay with Voucher",
+    'create_voucher'=>'Create Subscription Voucher',
+    'subscription_vouchers'=>'Subscription Vouchers',
+    'transcation_id'=>'Transcation ID',
+    'voucher_code'=>'Voucher Code',
+    'vouchers'=>"Subscription Vouchers",
+    'edit_voucher'=>'Edit Subscription Voucher',
+    
 ];

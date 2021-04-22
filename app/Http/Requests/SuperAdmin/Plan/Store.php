@@ -32,7 +32,6 @@ class Store extends FormRequest
             'trial_period' => 'sometimes|integer|max:100000',
             'invoice_period' => 'sometimes|integer|max:100000',
             'grace_period' => 'sometimes|integer|max:100000',
-            'order' => 'integer'
         ];
     }
 }
