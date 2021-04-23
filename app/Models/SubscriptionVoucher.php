@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SubscriptionVoucher extends Model
 {
     protected $fillable=[
-        'company_id','plan_id','voucher_code','transcation_id',
+        'company_id','plan_id','voucher_code','transcation_id','status'
     ];
     public function plan()
     {

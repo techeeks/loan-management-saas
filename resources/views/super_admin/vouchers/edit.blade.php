@@ -16,7 +16,6 @@
         </div>
     </div>
 @endsection
- 
 @section('content') 
     <form action="{{ route('super_admin.vouchers.update', $voucher->id) }}" method="POST" enctype="multipart/form-data">
         @include('layouts._form_errors')

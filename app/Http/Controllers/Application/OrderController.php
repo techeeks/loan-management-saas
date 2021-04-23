@@ -372,7 +372,7 @@ class OrderController extends Controller
         $plan = Plan::where('slug', $request->plan)->firstOrFail();
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $voucher=SubscriptionVoucher::where(['company_id'=>$currentCompany->id,'voucher_code'=>$request->voucher_code])->first();
+        $voucher=SubscriptionVoucher::where(['company_id'=>$currentCompany->id,'voucher_code'=>$request->voucher_code,'status'=>"New"])->first();
         if($voucher){
             $order = Order::create([
                 'company_id' => $currentCompany->id,
@@ -393,6 +393,8 @@ class OrderController extends Controller
             } else {
                 $currentCompany->newSubscription('main', $voucher->plan);
             }
+            $voucher->status="Used";
+            $voucher->save();
             session()->flash('alert-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));
             return redirect()->route('home');
         }

@@ -7,6 +7,7 @@
                     <th>{{ __('messages.plan') }}</th>
                     <th>{{ __('messages.transcation_id') }}</th>
                     <th>{{ __('messages.voucher_code') }}</th>
+                    <th>{{ __('messages.status') }}</th>
                     <th class="w-50px">Action</th>
                 </tr> 
             </thead>
@@ -24,6 +25,18 @@
                         </td>
                         <td>
                             {{$voucher->voucher_code}}
+                        </td>
+                        <td>
+                            @if($voucher->status == 'New')
+                            <div class="badge badge-success fs-0-9rem">
+                                {{ $voucher->status }}
+                            </div>
+                     
+                        @else
+                            <div class="badge badge-danger fs-0-9rem">
+                                {{ $voucher->status }}
+                            </div>
+                        @endif
                         </td>
                         <td class="d-inline-flex">
                             <a href="{{ route('super_admin.vouchers.edit', $voucher->id) }}" class="btn btn-sm btn-link">

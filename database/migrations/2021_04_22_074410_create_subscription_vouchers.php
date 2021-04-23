@@ -20,6 +20,7 @@ class CreateSubscriptionVouchers extends Migration
             $table->string('voucher_code')->unique();
             $table->string('transcation_id')->unique();
             $table->timestamps();
+            $table->enum('status',['New','Used'])->default("New");
             $table->foreign('plan_id')->references('id')->on('plans');
             $table->foreign('company_id')->references('id')->on('companies');
         });

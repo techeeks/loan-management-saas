@@ -3,7 +3,7 @@
         <table class="table mb-0 thead-border-top-0 table-striped">
             <thead>
                 <tr>
-                    <th class="w-30px" class="text-center">{{ __('messages.order_id') }}</th>
+                    <th class="w-30px" class="text-center">{{ __('messages.payment') }}</th>
                     <th>{{ __('messages.transaction_id') }}</th>
                     <th>{{ __('messages.user') }}</th>
                     <th>{{ __('messages.plan') }}</th>
