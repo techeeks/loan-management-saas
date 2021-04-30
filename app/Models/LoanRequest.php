@@ -56,5 +56,19 @@ class LoanRequest extends Model
     {
         $query->where('company_id', $company_id);
     }
+    
+    public function overdue()
+    {
+        $this->update(['status' => 'Overdue']);
 
+        return $this;
+    }
+    public function payment()
+    {
+        return $this->hasMany('App\Models\LoanPayment','loan_id','id');
+    }
+    public function totalPaid($loan_id)
+    {
+        return LoanPayment::where('loan_id',$loan_id)->sum('amount');
+    }
 }

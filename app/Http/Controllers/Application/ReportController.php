@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Application;
 
 use App\Http\Controllers\Controller;
+use App\Models\LoanRequest;
+use Laravel\Ui\Presets\React;
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -44,5 +48,35 @@ class ReportController extends Controller
     public function expenses()
     {
         return view('application.reports.expenses');
+    }
+    public function paidLoans(Request $request)
+    {
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $query=LoanRequest::findByCompany($currentCompany->id)->where('status','Paid')->orderBy('id','DESC');
+        // Query Invoices by Company and Tab
+
+        // Apply Filters and Paginate
+        $loans = QueryBuilder::for($query)
+            ->paginate()
+            ->appends(request()->query());
+            return view('application.reports.paid_loans', [
+                'loans' => $loans,
+        ]);
+    }
+    public function overDueLoans(Request $request)
+    {
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $query=LoanRequest::findByCompany($currentCompany->id)->where('status','Overdue')->orderBy('return_date','DESC');
+        // Query Invoices by Company and Tab
+
+        // Apply Filters and Paginate
+        $loans = QueryBuilder::for($query)
+            ->paginate()
+            ->appends(request()->query());
+            return view('application.reports.overdue_loans', [
+                'loans' => $loans,
+        ]);
     }
 }

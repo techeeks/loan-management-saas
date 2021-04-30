@@ -70,17 +70,6 @@
                     </div>
                 </div>
                 <div class="col-md-4 pl-4">
-                    <div class="form-group required">
-                        <label for="status">{{ __('messages.status') }}</label>
-                       <select class="form-control select" required id="status" name="status">
-                           <option value="">Choose Status</option>
-                           <option value="Pending">Pending</option>
-                           <option value="Overdue">OverDue</option>
-                           <option value="Paid">Paid</option>
-                       </select>
-                    </div>
-                </div>
-                <div class="col-md-4 pl-4">
                     
                     <div class="form-group required">
                         <label for="description">{{ __('messages.description') }}</label>

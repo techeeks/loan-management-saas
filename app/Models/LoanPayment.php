@@ -101,5 +101,9 @@ class LoanPayment extends Model
             ? explode("-", $this->payment_number)[0]
             : CompanySetting::getSetting('payment_prefix', $this->company_id);
     }
+    public function totalPaid()
+    {
+        return $this->sum('amount');
+    }
 
 }

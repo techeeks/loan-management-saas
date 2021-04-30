@@ -1,6 +1,6 @@
-@extends('layouts.app', ['page' => 'Loans'])
+@extends('layouts.app', ['page' => 'reports.paid_loans'])
 
-@section('title', __('messages.loans'))
+@section('title', __('messages.paid_loans'))
     
 @section('page_header')
     <div class="page__heading d-flex align-items-center">
@@ -8,15 +8,11 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="#"><i class="material-icons icon-20pt">home</i></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ __('messages.loans') }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ __('messages.paid_loans') }}</li>
                 </ol>
             </nav>
-            <h1 class="m-0">{{ __('messages.loans') }}</h1>
+            <h1 class="m-0">{{ __('messages.paid_loans') }}</h1>
         </div>
-        <a href="{{ route('loan.requests.create', ['company_uid' => $currentCompany->uid]) }}" class="btn btn-success ml-3">
-            <i class="material-icons">add</i> 
-            {{ __('messages.create_loan_request') }}
-        </a>
     </div>
 @endsection
 
@@ -31,7 +27,6 @@
                 <tr>
                     <th>{{ __('messages.reference_number') }}</th>
                     <th>{{ __('messages.customer') }}</th>
-                   
                     <th>{{ __('messages.amount') }}</th>
                     <th>{{ __('messages.amount_paid') }}</th>
                     <th>{{ __('messages.balance') }}</th>
@@ -67,47 +62,15 @@
                             {{ $loan->return_date}}
                         </td>
                         <td>
-                            @if($loan->status!="Overdue" && $loan->status!="Paid")
-                                @if(strtotime(date('Y-m-d'))>strtotime($loan->return_date))
-                                    @php 
-                                        $loan->overdue();
-                                        $loan->status="Overdue";
-                                    @endphp
-                                @endif
-                            @endif
-                            @if($loan->status == 'Pending')
-                            <div class="badge badge-warning fs-0-9rem">
-                                {{ $loan->status }}
-                            </div>
-                            @elseif($loan->status == 'Overdue')
-                            <div class="badge badge-danger fs-0-9rem">
-                                {{ $loan->status }}
-                            </div>
-                            @elseif($loan->status == 'Paid')
                             <div class="badge badge-success fs-0-9rem">
                                 {{ $loan->status }}
                             </div>
-                            @endif
                         </td>
                         <td class="h6  d-inline-flex">
-                           
                             <a href="{{ route('loan.requests.detail', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
                                 <i class="material-icons icon-16pt">arrow_forward</i>
                             </a>
                            
-                            @if($loan->status!="Paid")
-                            
-                            <a href="{{ route('loan.requests.edit', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
-                                <i class="material-icons icon-16pt">edit</i>
-                            </a>
-                            <a href="{{ route('loan.requests.delete', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
-                                <i class="material-icons icon-16pt">delete</i>
-                            </a>
-                                <a href="{{ route('loan.payments.create', ['loan_id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
-                                    <i class="material-icons icon-16pt">payment</i>
-                                </a>
-
-                            @endif
                         </td>
                     </tr>
                 @endforeach

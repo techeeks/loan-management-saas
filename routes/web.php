@@ -141,6 +141,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::get('{id}/edit', 'LoanRequestController@edit' )->name('loan.requests.edit');
         Route::get('{id}/delete', 'LoanRequestController@delete' )->name('loan.requests.delete');
         Route::get('{id}/add-payment', 'LoanRequestController@newPayment' )->name('loan.requests.add.payment');
+        Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.detail');
         Route::post('{id}/update', 'LoanRequestController@update' )->name('loan.requests.update');
         Route::get('add-new', 'LoanRequestController@add' )->name('loan.requests.create');
     });
@@ -163,6 +164,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::get('{payment}/edit', 'LoanPaymentController@edit')->name('loan.payments.edit');
         Route::post('{payment}/edit', 'LoanPaymentController@update')->name('loan.payments.update');
         Route::get('{payment}/delete', 'LoanPaymentController@delete')->name('loan.payments.delete');
+        
     });
     Route::get('/payments', 'PaymentController@index')->name('payments');
     Route::get('/payments/create', 'PaymentController@create')->name('payments.create');
@@ -198,6 +200,10 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
     Route::get('/reports/profit-loss/pdf', 'PDFReportController@profit_loss')->name('reports.profit_loss.pdf');
     Route::get('/reports/expenses', 'ReportController@expenses')->name('reports.expenses');
     Route::get('/reports/expenses/pdf', 'PDFReportController@expenses')->name('reports.expenses.pdf');
+    Route::get('/reports/overdue-loans', 'ReportController@overDueLoans')->name('reports.overdue.loans');
+    Route::get('/reports/paid-loans', 'ReportController@paidLoans')->name('reports.paid.loans');
+    
+    
 
     // Setting Routes
     Route::group(['namespace' => 'Settings', 'prefix' => 'settings'], function () {

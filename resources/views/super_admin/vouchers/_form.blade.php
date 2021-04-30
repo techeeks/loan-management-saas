@@ -37,15 +37,6 @@
                     </div>
                 </div>
             </div> 
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-group required">
-                        <label for="voucher_code">{{ __('messages.voucher_code') }}</label>
-                        <input name="voucher_code" type="text" class="form-control" placeholder="{{ __('messages.voucher_code') }}" value="{{ $voucher->voucher_code }}" required>
-                    </div>
-                </div>
-            </div>
             <div class="form-group text-center mt-5">
                 <a href="{{ route('super_admin.vouchers')}}" class="btn btn-danger text-white">{{ __('messages.cancel') }}</a>
                 <button type="submit" class="btn btn-primary ">{{ __('messages.save') }}</button>

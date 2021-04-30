@@ -105,17 +105,37 @@
                                             <span class="sidebar-menu-text">{{ __('messages.customers') }}</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item {{ $page == 'Loan' ? 'active' : ''}}">
+                                    <li class="sidebar-menu-item {{ $page == 'Loans' ? 'active' : ''}}">
                                         <a class="sidebar-menu-button" href="{{ route('loan.requests', ['company_uid' => $currentCompany->uid]) }}">
                                             <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">book</i>
                                             <span class="sidebar-menu-text">{{ __('messages.loans') }}</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item {{ $page == 'Loan' ? 'active' : ''}}">
+                                    <li class="sidebar-menu-item {{ $page == 'payments' ? 'active' : ''}}">
                                         <a class="sidebar-menu-button" href="{{ route('loan.payments', ['company_uid' => $currentCompany->uid]) }}">
                                             <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">payment</i>
                                             <span class="sidebar-menu-text">{{ __('messages.payments') }}</span>
                                         </a>
+                                    </li>
+                                    <li class="sidebar-menu-item ">
+                                        <a class="sidebar-menu-button collapsed" data-toggle="collapse" href="#reports_menu" aria-expanded="false">
+                                            <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">pie_chart_outlined</i>
+                                            <span class="sidebar-menu-text">Reports</span>
+                                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                                        </a>
+                                        <ul class="sidebar-submenu collapse" id="reports_menu" style="">
+                                            
+                                            <li class="sidebar-menu-item ">
+                                                <a class="sidebar-menu-button" href="{{ route('reports.paid.loans', ['company_uid' => $currentCompany->uid])  }}">
+                                                    <span class="sidebar-menu-text">Paid Loans</span>
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-menu-item ">
+                                                <a class="sidebar-menu-button" href="{{ route('reports.overdue.loans', ['company_uid' => $currentCompany->uid])  }}">
+                                                    <span class="sidebar-menu-text">Overdue Loans</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                     <li class="sidebar-menu-item {{ $page == 'settings' ? 'active' : ''}}">
                                         <a class="sidebar-menu-button" href="{{ route('settings.account', ['company_uid' => $currentCompany->uid]) }}">

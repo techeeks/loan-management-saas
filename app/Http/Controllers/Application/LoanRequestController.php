@@ -25,7 +25,7 @@ class LoanRequestController extends Controller
         $loans = QueryBuilder::for($query)
             ->paginate()
             ->appends(request()->query());
-            return view('application..loan_requests.index', [
+            return view('application.loan_requests.index', [
                 'loans' => $loans,
         ]);
     }
@@ -71,13 +71,13 @@ class LoanRequestController extends Controller
             'amount'=>'required|numeric',
             'loan_date'=>'required|date',
             'return_date'=>'required|date|after:loan_date',
-            'status'=>'required',
             'description'=>'required'
         ]);
         $user = $request->user();
         $currentCompany = $user->currentCompany();
         $data=$request->all();
         $data["company_id"]=$currentCompany->id;
+        $data["status"]="Pending";
         $loan=LoanRequest::create($data);
         session()->flash('alert-success', __('messages.loan_added'));
         return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);

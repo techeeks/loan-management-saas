@@ -35,13 +35,16 @@ class SubscriptionVoucherController extends Controller
     }
     public function store(Request $request)
     {
+        $tid=Str::of(bin2hex(random_bytes(3)))->upper();
+        // $request->voucher_code=$tid;
         $request->validate([
             'company_id'=>'required',
-            'voucher_code'=>'required|unique:subscription_vouchers,voucher_code',
+            // 'voucher_code'=>'required|unique:subscription_vouchers,voucher_code',
             'transcation_id'=>'required|unique:subscription_vouchers,transcation_id',
             'plan_id'=>'required',
         ]);
         $data=$request->all();
+        $data["voucher_code"]=$tid;
         $voucher=SubscriptionVoucher::create($data);
         session()->flash('alert-success', __('messages.voucher_created'));
         return redirect()->route('super_admin.vouchers');
@@ -61,7 +64,6 @@ class SubscriptionVoucherController extends Controller
     {
         $request->validate([
             'company_id'=>'required',
-            'voucher_code'=>'required|unique:subscription_vouchers,voucher_code,'.$voucher,
             'transcation_id'=>'required|unique:subscription_vouchers,transcation_id,'.$voucher,
             'plan_id'=>'required',
         ]);
