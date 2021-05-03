@@ -426,7 +426,7 @@ class PlanSubscription extends Model
     {
         $featureValue = $this->getFeatureValue($featureSlug);
         $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
-
+       
         if (!$usage) {
             $this->recordFeatureUsage($featureSlug, 0);
             $usage = $this->usage()->byFeatureSlug($featureSlug)->first();

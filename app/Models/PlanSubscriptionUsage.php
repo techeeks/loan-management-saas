@@ -83,10 +83,10 @@ class PlanSubscriptionUsage extends Model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByFeatureSlug(Builder $builder, string $featureSlug): Builder
-    {
-        $feature = PlanFeature::where('slug', $featureSlug)->first();
-
-        return $builder->where('feature_id', $feature->getKey() ?? null);
+    { 
+        return $builder->whereHas('feature', function($q) use($featureSlug) {
+            $q->where('slug',$featureSlug);
+        }); 
     }
 
     /**

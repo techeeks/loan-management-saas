@@ -377,22 +377,25 @@ class OrderController extends Controller
             $order = Order::create([
                 'company_id' => $currentCompany->id,
                 'user_id' => $user->id,
-                'plan_id' => $voucher->plan->id,
+                'plan_id' => $plan->id,
                 'card_number' => '',
                 'card_exp_month' => '',
                 'card_exp_year' => '',
-                'price' => $voucher->plan->price,
-                'currency' =>$voucher->plan->currency,
+                'price' => $plan->price,
+                'currency' => $plan->currency,
                 'transaction_id' => $voucher->transaction_id,
                 'payment_type' => 'Voucher',
                 'payment_status' => 'COMPLETED',
                 'order_id' => $request->orderId,
             ]);
+
             if ($currentCompany->subscription('main')) {
-                $currentCompany->subscription('main')->changePlan($voucher->plan);
+                $currentCompany->subscription('main')->changePlan($plan);
             } else {
-                $currentCompany->newSubscription('main', $voucher->plan);
+                // or Create new subscription
+                $currentCompany->newSubscription('main', $plan);
             }
+            
             $voucher->status="Used";
             $voucher->save();
             session()->flash('alert-success', __('messages.payment_successful', ['payment_number' => $request->orderId]));

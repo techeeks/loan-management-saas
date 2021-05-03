@@ -43,13 +43,7 @@
         </a>
     </li>
 
-
-    <li class="sidebar-menu-item">
-        <a href="{{ route('settings.email_template', ['company_uid' => $currentCompany->uid]) }}" class="sidebar-menu-button {{ $tab == 'email_template' ? 'text-primary' : 'text-secondary' }}">
-            <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">email</i>
-            <span class="sidebar-menu-text">{{ __('messages.email_templates') }}</span>
-        </a>
-    </li>
+ 
 
     <li class="sidebar-menu-item">
         <a href="{{ route('settings.team', ['company_uid' => $currentCompany->uid]) }}" class="sidebar-menu-button {{ $tab == 'team' ? 'text-primary' : 'text-secondary' }}">
