@@ -128,71 +128,7 @@
                 <textarea name="billing[address_1]" class="form-control" rows="2" placeholder="{{ __('messages.address') }}" required>{{ $customer->billing->address_1 }}</textarea>
             </div>
         </div>
-    </div>
-
-    <div class="row no-gutters">
-        <div class="col-lg-4 card-body">
-            <p><strong class="headings-color">{{ __('messages.shipping_address') }}</strong></p>
-            <p class="text-muted">{{ __('messages.customer_shipping_address') }}</p>
-        </div>
-        <div class="col-lg-8 card-form__body card-body">
-            <p class="row"><strong class=" col headings-color">{{ __('messages.shipping_address') }}</strong></p>
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[name]">{{ __('messages.name') }}</label>
-                        <input name="shipping[name]" type="text" class="form-control" value="{{ $customer->shipping->name }}" placeholder="{{ __('messages.address_name') }}">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[phone]">{{ __('messages.phone') }}</label>
-                        <input name="shipping[phone]" type="text" class="form-control" value="{{ $customer->shipping->phone }}" placeholder="{{ __('messages.phone') }}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[country_id]">{{ __('messages.country') }}</label>
-                        <select id="shipping[country_id]" name="shipping[country_id]" data-toggle="select" class="form-control select2-hidden-accessible" data-select2-id="shipping[country_id]">
-                            <option disabled selected>{{ __('messages.select_country') }}</option>
-                            @foreach(get_countries_select2_array() as $option)
-                                <option value="{{ $option['id'] }}" {{ $customer->shipping->country_id == $option['id'] ? 'selected=""' : '' }}>{{ $option['text'] }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[state]">{{ __('messages.state') }}</label>
-                        <input name="shipping[state]" type="text" class="form-control" value="{{ $customer->shipping->state }}" placeholder="{{ __('messages.state') }}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[city]">{{ __('messages.city') }}</label>
-                        <input name="shipping[city]" type="text" class="form-control" value="{{ $customer->shipping->city }}" placeholder="{{ __('messages.city') }}">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-group">
-                        <label for="shipping[zip]">{{ __('messages.postal_code') }}</label>
-                        <input name="shipping[zip]" type="text" class="form-control" value="{{ $customer->shipping->zip }}" placeholder="{{ __('messages.postal_code') }}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="shipping[address_1]">{{ __('messages.address') }}</label>
-                <textarea name="shipping[address_1]" class="form-control" rows="2" placeholder="{{ __('messages.address') }}">{{ $customer->shipping->address_1 }}</textarea>
-            </div>
-        </div>
-    </div>
+    </div> 
 
     @if($customer->getCustomFields()->count() > 0)
         <div class="row no-gutters">

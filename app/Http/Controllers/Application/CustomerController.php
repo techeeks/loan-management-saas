@@ -88,7 +88,7 @@ class CustomerController extends Controller
 
         // Set Customer's billing and shipping addresses
         $customer->address('billing', $request->input('billing'));
-        $customer->address('shipping', $request->input('shipping'));
+       // $customer->address('shipping', $request->input('shipping'));
 
         // Add custom field values
         $customer->addCustomFields($request->custom_fields);
@@ -173,7 +173,7 @@ class CustomerController extends Controller
 
         // Update Customer's billing and shipping addresses
         $customer->updateAddress('billing', $request->input('billing'));
-        $customer->updateAddress('shipping', $request->input('shipping'));
+       // $customer->updateAddress('shipping', $request->input('shipping'));
 
         // Update custom field values
         $customer->updateCustomFields($request->custom_fields);

@@ -29,18 +29,22 @@ class LoanRequestController extends Controller
                 'loans' => $loans,
         ]);
     }
-    public function add()
+
+    public function add(Request $request)
     {
-        $customers=Customer::all()->sortByDesc('id');
+        $user = $request->user();  
+        $currentCompany = $user->currentCompany(); 
+        $customers=  $currentCompany->customers;
         return view('application.loan_requests.add',compact('customers'));
     }
+
     public function edit(Request $request)
     {
-        $user = $request->user();
-
+        $user = $request->user();  
         $currentCompany = $user->currentCompany();
-        $loan=LoanRequest::findOrFail($request->id);
-        $customers=Customer::all()->sortByDesc('id');
+
+        $loan = LoanRequest::findOrFail($request->id);
+        $customers=  $currentCompany->customers;
         // echo '<pre>',print_r($loan);exit;
         return view('application.loan_requests.edit',compact('customers','loan'));
     }
