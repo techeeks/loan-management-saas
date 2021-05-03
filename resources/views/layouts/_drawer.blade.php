@@ -127,12 +127,12 @@
                                             
                                             <li class="sidebar-menu-item ">
                                                 <a class="sidebar-menu-button" href="{{ route('reports.paid.loans', ['company_uid' => $currentCompany->uid])  }}">
-                                                    <span class="sidebar-menu-text">Paid Loans</span>
+                                                    <span class="sidebar-menu-text">{{ __('messages.paid_loans') }}</span>
                                                 </a>
                                             </li>
                                             <li class="sidebar-menu-item ">
                                                 <a class="sidebar-menu-button" href="{{ route('reports.overdue.loans', ['company_uid' => $currentCompany->uid])  }}">
-                                                    <span class="sidebar-menu-text">Overdue Loans</span>
+                                                    <span class="sidebar-menu-text">{{ __('messages.overdue_loans') }}</span>
                                                 </a>
                                             </li>
                                         </ul>

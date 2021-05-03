@@ -34,8 +34,7 @@ class SubscriptionVoucherController extends Controller
         ]); 
     }
     public function store(Request $request)
-    {
-        $tid=Str::of(bin2hex(random_bytes(3)))->upper();
+    { 
         // $request->voucher_code=$tid;
         $request->validate([
             'company_id'=>'required',
@@ -44,7 +43,7 @@ class SubscriptionVoucherController extends Controller
             'plan_id'=>'required',
         ]);
         $data=$request->all();
-        $data["voucher_code"]=$tid;
+        $data["voucher_code"]= $this->GenerateVoucher(8);
         $voucher=SubscriptionVoucher::create($data);
         session()->flash('alert-success', __('messages.voucher_created'));
         return redirect()->route('super_admin.vouchers');
@@ -79,5 +78,21 @@ class SubscriptionVoucherController extends Controller
         $voucher->delete();
         session()->flash('alert-success', __('messages.voucher_deleted'));
         return redirect()->route('super_admin.vouchers');
+    }
+
+    private function GenerateVoucher($length){
+        
+        $uppercase    = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
+        $numbers      = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $characters   = [];
+        $coupon = '';
+
+        $characters = array_merge($characters, $numbers , $uppercase);
+
+        for ($i = 0; $i < $length; $i++) {
+            $coupon .= $characters[mt_rand(0, count($characters) - 1)];
+        }
+
+        return $coupon;
     }
 }

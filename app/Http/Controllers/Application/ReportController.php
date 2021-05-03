@@ -49,6 +49,7 @@ class ReportController extends Controller
     {
         return view('application.reports.expenses');
     }
+
     public function paidLoans(Request $request)
     {
         $user = $request->user();
@@ -64,11 +65,12 @@ class ReportController extends Controller
                 'loans' => $loans,
         ]);
     }
+
     public function overDueLoans(Request $request)
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $query=LoanRequest::findByCompany($currentCompany->id)->where('status','Overdue')->orderBy('return_date','DESC');
+        $query=LoanRequest::findByCompany($currentCompany->id)->whereIn('status',['Pending','Overdue'])->orderBy('return_date','DESC');
         // Query Invoices by Company and Tab
 
         // Apply Filters and Paginate

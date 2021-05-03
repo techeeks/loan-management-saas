@@ -372,7 +372,7 @@ class OrderController extends Controller
         $plan = Plan::where('slug', $request->plan)->firstOrFail();
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $voucher=SubscriptionVoucher::where(['company_id'=>$currentCompany->id,'voucher_code'=>$request->voucher_code,'status'=>"New"])->first();
+        $voucher=SubscriptionVoucher::where(['company_id'=>$currentCompany->id, 'plan_id' => $plan->id, 'voucher_code'=>$request->voucher_code,'status'=>"New"])->first();
         if($voucher){
             $order = Order::create([
                 'company_id' => $currentCompany->id,

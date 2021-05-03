@@ -678,6 +678,6 @@ return [
     'edit_voucher'=>'Edit Subscription Voucher',
     'amount_paid'=>"Total Amount Paid",
     'balance'=>'Balance',
-    'overdue_loans'=>'Overdue Loans',
+    'overdue_loans'=>'Due Loans',
     'paid_loans'=>'Paid Loans',
 ];
