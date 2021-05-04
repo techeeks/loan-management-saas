@@ -85,6 +85,10 @@ class Customer extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+    public function loans()
+    {
+        return $this->hasMany(LoanRequest::class);
+    }
 
     /**
      * Get invoice_due_amount attribute

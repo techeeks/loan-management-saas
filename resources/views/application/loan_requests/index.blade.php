@@ -91,9 +91,7 @@
                         </td>
                         <td class="h6  d-inline-flex">
                            
-                            <a href="{{ route('loan.requests.detail', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
-                                <i class="material-icons icon-16pt">arrow_forward</i>
-                            </a>
+                          
                            
                             @if($loan->status!="Paid")
                             

@@ -67,6 +67,10 @@ class LoanRequest extends Model
     {
         return $this->hasMany('App\Models\LoanPayment','loan_id','id');
     }
+    public function payments()
+    {
+        return $this->hasMany(LoanRequest::class);
+    }
     public function totalPaid($loan_id)
     {
         return LoanPayment::where('loan_id',$loan_id)->sum('amount');

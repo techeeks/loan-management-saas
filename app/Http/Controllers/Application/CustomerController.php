@@ -7,9 +7,11 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Requests\Application\Customer\Store;
 use App\Http\Requests\Application\Customer\Update;
+use App\Models\LoanRequest;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -110,18 +112,28 @@ class CustomerController extends Controller
     public function details(Request $request)
     {
         $customer = Customer::findOrFail($request->customer);
-
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
         $invoices = $customer->invoices()->orderBy('invoice_number')->paginate(50);
         $estimates = $customer->estimates()->orderBy('estimate_number')->paginate(50);
         $payments = $customer->payments()->orderBy('payment_number')->paginate(50);
         $activities = Activity::where('subject_id', $customer->id)->get();
-  
+        $loans=$customer->loans()->orderBy('created_at','DESC')->get();
+        $payments=DB::table('loan_requests')->join('loan_payments','loan_payments.loan_id','=','loan_requests.id')
+        ->join('payment_methods','payment_methods.id','=','loan_payments.payment_method_id')
+        ->join('currencies','currencies.id','=','loan_requests.currency_id')
+        ->where('loan_requests.customer_id',$customer->id)->select('loan_requests.reference_number','loan_payments.*','payment_methods.name as payment_method','currencies.symbol as currency_code')->orderBy('created_at',"DESC")->get();
+        // echo '<pre>',print_r($payments);exit;
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
         return view('application.customers.details', [
             'customer' => $customer,
             'invoices' => $invoices,
             'estimates' => $estimates,
             'payments' => $payments,
             'activities' => $activities,
+            'loans'=>$loans,
+            'payments'=>$payments,
+            'payment_prefix' => $payment_prefix,
         ]);
     }
 
