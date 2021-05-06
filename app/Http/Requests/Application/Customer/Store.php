@@ -26,7 +26,6 @@ class Store extends FormRequest
     {
         return [
             'display_name' => 'required|string|max:190',
-            'contact_name' => 'required|string|max:190',
             'email' => [
                 'required',
                 'string',
@@ -37,17 +36,20 @@ class Store extends FormRequest
                 }),
             ],
             'phone' => 'nullable|string|max:190',
-            'website' => 'nullable|string|max:190',
-            'currency_id' => 'required|integer',
-            'vat_number' => 'nullable|string',
+            'guarantor_phone'=>'nullable|string|max:190',
+            'guarantor_name'=>'required|string|max:190',
 
-            'billing.name' => 'required|string|max:190',
-            'billing.phone' => 'nullable|string|max:190',
             'billing.country_id' => 'required|integer',
             'billing.state' => 'nullable|string|max:190',
             'billing.city' => 'nullable|string|max:190',
             'billing.zip' => 'nullable|string|max:190',
             'billing.address_1' => 'required|string|max:500',
+
+            'gurantor.country_id' => 'required|integer',
+            'gurantor.state' => 'nullable|string|max:190',
+            'gurantor.city' => 'nullable|string|max:190',
+            'gurantor.zip' => 'nullable|string|max:190',
+            'gurantor.address_1' => 'required|string|max:500',
 
             'shipping.name' => 'nullable|string|max:190',
             'shipping.phone' => 'nullable|string|max:190',

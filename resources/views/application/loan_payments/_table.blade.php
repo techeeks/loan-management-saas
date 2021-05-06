@@ -8,6 +8,7 @@
                     <th>{{ __('messages.date') }}</th>
                     <th>{{ __('messages.payment_type') }}</th>
                     <th>{{ __('messages.amount') }}</th>
+                    <th>View</th>
                 </tr>
             </thead>
             <tbody class="list" id="payments">
@@ -27,6 +28,9 @@
                         </td>
                         <td>
                             {{ currencyFormat($payment->amount, $payment->loan->currency->symbol) }}
+                        </td>
+                        <td>
+                           <a href="{{ route('loan.payments.details', ['payment' => $payment->id,'company_uid' => $currentCompany->uid]) }}">View</a>
                         </td>
                     </tr>
                 @endforeach

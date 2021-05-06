@@ -3,9 +3,8 @@
         <table class="table mb-0 thead-border-top-0 table-striped">
             <thead>
                 <tr>
-                    <th>{{ __('messages.company') }}</th>
+                    <th>{{ __('messages.voucher_name') }}</th>
                     <th>{{ __('messages.plan') }}</th>
-                    <th>{{ __('messages.transcation_id') }}</th>
                     <th>{{ __('messages.voucher_code') }}</th>
                     <th>{{ __('messages.status') }}</th>
                     <th class="w-50px">Action</th>
@@ -14,15 +13,13 @@
             <tbody class="list" id="vouchers">
                 @foreach ($vouchers as $voucher)
                     <tr>
-                        <td>
-                            {{$voucher->company->name}}
+                        <td> 
+                            {{$voucher->voucher_name}}
                         </td>
                         <td> 
                             {{$voucher->plan->name}}
                         </td>
-                        <td> 
-                            {{$voucher->transcation_id}}
-                        </td>
+                        
                         <td>
                             {{$voucher->voucher_code}}
                         </td>

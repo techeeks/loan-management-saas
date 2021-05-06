@@ -143,6 +143,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::get('{id}/add-payment', 'LoanRequestController@newPayment' )->name('loan.requests.add.payment');
         Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.detail');
         Route::post('{id}/update', 'LoanRequestController@update' )->name('loan.requests.update');
+        Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.details');
         Route::get('add-new', 'LoanRequestController@add' )->name('loan.requests.create');
     });
     // Estimates
@@ -164,6 +165,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::get('{payment}/edit', 'LoanPaymentController@edit')->name('loan.payments.edit');
         Route::post('{payment}/edit', 'LoanPaymentController@update')->name('loan.payments.update');
         Route::get('{payment}/delete', 'LoanPaymentController@delete')->name('loan.payments.delete');
+        Route::get('{payment}/detail', 'LoanPaymentController@detail' )->name('loan.payments.details');
         
     });
     Route::get('/payments', 'PaymentController@index')->name('payments');

@@ -17,7 +17,6 @@ class LoanPayment extends Model
         'company_id',
         'loan_id',
         'payment_method_id',
-        'transaction_reference',
         'payment_date',
         'payment_number',
         'amount',

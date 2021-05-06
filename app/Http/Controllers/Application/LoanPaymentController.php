@@ -25,6 +25,7 @@ class LoanPaymentController extends Controller
             return view('application.loan_payments.index', [
                 'payments' => $payments,
                 'payment_prefix'=>$payment_prefix,
+                'currentCompany'=>$currentCompany,
         ]);
     }
     public function create(Request $request)
@@ -59,7 +60,6 @@ class LoanPaymentController extends Controller
             'payment_number' => 'required',
             'payment_method_id' => 'required',
             'amount'=>'required|numeric|min:1',
-            'transaction_reference'=>'required',
             'payment_date'=>'required|date',
         ]);
         $user = $request->user();
@@ -81,5 +81,12 @@ class LoanPaymentController extends Controller
         // exit;
         session()->flash('alert-success', __('messages.payment_added'));
         return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
+    }
+    public function detail(Request $request)
+    {
+        $payment=LoanPayment::find($request->payment);
+        return view('application.loan_payments.details', [
+            'payment' => $payment
+        ]);
     }
 }

@@ -8,6 +8,8 @@ use App\Models\Estimate;
 use App\Models\Payment;
 use App\Services\PDFService;
 use Illuminate\Http\Request;
+use App\Models\LoanPayment;
+use App\Models\LoanRequest;
 
 class PDFController extends Controller
 {
@@ -244,7 +246,8 @@ class PDFController extends Controller
      */
     public function payment(Request $request)
     {
-        $payment = Payment::findByUid($request->payment);
+        $payment = LoanPayment::find($request->payment);
+        $loan=LoanRequest::find($payment->loan_id);
         $company = $payment->company;
         $customer = $payment->customer;
 
@@ -264,19 +267,19 @@ class PDFController extends Controller
         $pdf->setHideHeader(true);
 
         // Set Sub Total
-        $pdf->addTotal(__('messages.payment_date'), $payment->formatted_payment_date);
+        $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
         $pdf->addTotal(__('messages.payment_#'), $payment->payment_number);
-        $pdf->addTotal(__('messages.invoice_#'), $payment->invoice->invoice_number);
+        $pdf->addTotal(__('messages.loan_reference_number'), $loan->reference_number);
         $pdf->addTotal(__('messages.payment_mode'), $payment->payment_method->name ?? '');
 
         // Set Total
-        $pdf->addTotal(__('messages.amount'), money($payment->amount, $payment->invoice->currency_code)->format(), true);
+        $pdf->addTotal(__('messages.amount'), money($payment->amount,$loan->currency->code)->format(), true);
 
         //Add notes
         $pdf->addParagraph($payment->notes);
 
         //Set footernote
-        $pdf->setFooternote($company->getSetting('payment_footer'));
+        // $pdf->setFooternote($company->getSetting('payment_footer'));
 
         //Render or Download
         if($request->has('download')) {

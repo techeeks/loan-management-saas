@@ -27,6 +27,7 @@ class Customer extends Model
         'website',
         'currency_id',
         'vat_number',
+        'guarantor_id',
     ];
 
     /**
@@ -100,6 +101,10 @@ class Customer extends Model
         return $this->invoices()->sum('due_amount');
     }
 
+    public function guarantor()
+    {
+        return $this->belongsTo(Guaranter::class);
+    }
     /**
      * Scope a query to only include Customers of a given company.
      *

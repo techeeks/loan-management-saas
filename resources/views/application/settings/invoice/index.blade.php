@@ -70,10 +70,42 @@
                                 <label for="invoice_footer">{{ __('messages.footer') }}</label>
                                 <textarea name="invoice_footer" class="form-control" rows="4" placeholder="{{ __('messages.footer') }}">{{ $currentCompany->getSetting('invoice_footer') }}</textarea>
                             </div>
-            
+                            <div class="form-group mt-3">
+                                <label for="invoice_template">Invoice Template</label>
+                                                                <div class="row mt-3">
+                                                                            <div class="col-md-3">
+                                            <div class="custom-control custom-radio image-checkbox">
+                                                <input type="radio" class="custom-control-input" id="template_1" name="invoice_template" value="template_1" checked="">
+                                                <label class="custom-control-label" for="template_1">
+                                                    <img src="http://saasfoxtrot.varuscreative.com/assets/images/templates/invoice/template_1.png" class="img-fluid modal-image">
+                                                    <span>Template 1</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                                                            <div class="col-md-3">
+                                            <div class="custom-control custom-radio image-checkbox">
+                                                <input type="radio" class="custom-control-input" id="template_2" name="invoice_template" value="template_2">
+                                                <label class="custom-control-label" for="template_2">
+                                                    <img src="http://saasfoxtrot.varuscreative.com/assets/images/templates/invoice/template_2.png" class="img-fluid modal-image">
+                                                    <span>Template 2</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                                                            <div class="col-md-3">
+                                            <div class="custom-control custom-radio image-checkbox">
+                                                <input type="radio" class="custom-control-input" id="template_3" name="invoice_template" value="template_3">
+                                                <label class="custom-control-label" for="template_3">
+                                                    <img src="http://saasfoxtrot.varuscreative.com/assets/images/templates/invoice/template_3.png" class="img-fluid modal-image">
+                                                    <span>Template 3</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                                                    </div>
+                            </div>
                             <div class="form-group text-right mt-4">
                                 <button type="submit" class="btn btn-primary">{{ __('messages.update_settings') }}</button>
                             </div>
+
                         </form>
                     </div>
                 </div>

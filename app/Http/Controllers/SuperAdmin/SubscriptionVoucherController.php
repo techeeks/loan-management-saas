@@ -37,9 +37,7 @@ class SubscriptionVoucherController extends Controller
     { 
         // $request->voucher_code=$tid;
         $request->validate([
-            'company_id'=>'required',
-            // 'voucher_code'=>'required|unique:subscription_vouchers,voucher_code',
-            'transcation_id'=>'required|unique:subscription_vouchers,transcation_id',
+            'voucher_name'=>'required|string',
             'plan_id'=>'required',
         ]);
         $data=$request->all();
@@ -62,8 +60,7 @@ class SubscriptionVoucherController extends Controller
     public function update(Request $request,$voucher)
     {
         $request->validate([
-            'company_id'=>'required',
-            'transcation_id'=>'required|unique:subscription_vouchers,transcation_id,'.$voucher,
+            'voucher_name'=>'required|string',
             'plan_id'=>'required',
         ]);
         $data=$request->all();

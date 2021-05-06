@@ -46,12 +46,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="form-group required">
-                        <label for="transaction_reference">{{ __('messages.transaction_reference') }}</label>
-                        <input id="transaction_reference" name="transaction_reference" type="text" class="form-control" placeholder="{{ __('messages.transaction_reference') }}" autocomplete="off" value="{{ $payment->transaction_reference ?? '' }}" required>
-                    </div>
-                </div>
             </div>
 
             <div class="row">

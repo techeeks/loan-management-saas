@@ -17,8 +17,9 @@ class CreateCustomersTable extends Migration
             $table->bigIncrements('id');
             $table->uuid('uid')->unique();
             $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('guarantor_id');
             $table->string('display_name');
-            $table->string('contact_name');
+            $table->string('contact_name')->nullable();
             $table->string('email');
             $table->string('phone')->nullable();
             $table->string('website')->nullable();
@@ -27,6 +28,7 @@ class CreateCustomersTable extends Migration
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
+            $table->foreign('guarantor_id')->references('id')->on('guaranters')->onDelete('cascade');
         });
     }
 

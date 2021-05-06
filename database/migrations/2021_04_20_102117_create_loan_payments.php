@@ -19,7 +19,6 @@ class CreateLoanPayments extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('loan_id');
             $table->unsignedBigInteger('payment_method_id');
-            $table->text('transaction_reference');
             $table->float('amount');
             $table->date('payment_date');
             $table->text('notes')->nullable();

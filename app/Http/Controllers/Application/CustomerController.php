@@ -12,6 +12,7 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Guaranter;
 
 class CustomerController extends Controller
 {
@@ -68,28 +69,36 @@ class CustomerController extends Controller
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-
-        // Redirect back
+        $allData=$request->all();
+        
+        
+    
         $canAdd = $currentCompany->subscription('main')->canUseFeature('customers');
         if (!$canAdd) {
             session()->flash('alert-danger', __('messages.you_have_reached_the_limit'));
             return redirect()->route('customers', ['company_uid' => $currentCompany->uid]);
         }
+        // Redirect back
         
+        $gurantor=Guaranter::create(['display_name'=>$request->guarantor_name,'phone'=>$request->guarantor_phone,]);
+        $guranterAddress=$request->input('gurantor');
+        $guranterAddress["name"]=$gurantor->display_name;
+        $gurantor->address('gurantor', $guranterAddress);
         // Create Customer and Store in Database
         $customer = Customer::create([
+            'guarantor_id '=>1,
             'company_id' => $currentCompany->id,
             'display_name' => $request->display_name,
-            'contact_name' => $request->contact_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'website' => $request->website,
-            'currency_id' => $request->currency_id,
-            'vat_number' => $request->vat_number,
-        ]);
-
+            ]);
+            // echo $gurantor->id;exit;
+            // echo '<pre>',print_r($customer);exit;
+            
         // Set Customer's billing and shipping addresses
-        $customer->address('billing', $request->input('billing'));
+        $billing=$request->input('billing');
+        $billing["name"]=$customer->display_name;
+        $customer->address('billing', $billing);
        // $customer->address('shipping', $request->input('shipping'));
 
         // Add custom field values
@@ -119,6 +128,12 @@ class CustomerController extends Controller
         $payments = $customer->payments()->orderBy('payment_number')->paginate(50);
         $activities = Activity::where('subject_id', $customer->id)->get();
         $loans=$customer->loans()->orderBy('created_at','DESC')->get();
+        $totalDue=0;
+        foreach($loans as $loan)
+        {
+            $totalDue+=$loan->amount-$loan->totalPaid($loan->id);
+        }
+        $totalDue=currencyFormat($totalDue,'$');
         $payments=DB::table('loan_requests')->join('loan_payments','loan_payments.loan_id','=','loan_requests.id')
         ->join('payment_methods','payment_methods.id','=','loan_payments.payment_method_id')
         ->join('currencies','currencies.id','=','loan_requests.currency_id')
@@ -134,6 +149,7 @@ class CustomerController extends Controller
             'loans'=>$loans,
             'payments'=>$payments,
             'payment_prefix' => $payment_prefix,
+            'totalDue'=>$totalDue,
         ]);
     }
 
@@ -147,6 +163,8 @@ class CustomerController extends Controller
     public function edit(Request $request)
     {
         $customer = Customer::findOrFail($request->customer);
+        $gurantor=$customer->guarantor()->get();
+        echo '<pre>',print_r($gurantor);exit;
         
         // Fill model with old input
         if (!empty($request->old())) {

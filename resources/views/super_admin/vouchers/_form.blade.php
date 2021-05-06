@@ -15,27 +15,14 @@
                             @endforeach
                         </select>
                     </div>
-                </div> 
+                </div>
                 <div class="col">
                     <div class="form-group required">
-                        <label for="company_id">{{ __('messages.company') }}</label>
-                        <select required name="company_id" data-toggle="select" class="form-control select2-hidden-accessible" data-select2-id="company_id" required>
-                            <option disabled selected>Select Company</option>
-                            @foreach($companies as $company)
-                                <option value="{{ $company->id }}" {{ $company->id == $voucher->company_id ? 'selected=""' : '' }}>{{ $company->name }}</option>
-                            @endforeach
-                        </select>
+                        <label for="voucher_name">{{ __('messages.voucher_name') }}</label>
+                        <input name="voucher_name" type="text" class="form-control" placeholder="{{ __('messages.voucher_name') }}"  value="{{ $voucher->voucher_name  }}" required>
                     </div>
                 </div>
-            </div> 
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-group required">
-                        <label for="transcation_id">{{ __('messages.transcation_id') }}</label>
-                        <input name="transcation_id" type="text" class="form-control" placeholder="{{ __('messages.transcation_id') }}"  value="{{ $voucher->transcation_id  }}" required>
-                    </div>
-                </div>
+               
             </div> 
             <div class="form-group text-center mt-5">
                 <a href="{{ route('super_admin.vouchers')}}" class="btn btn-danger text-white">{{ __('messages.cancel') }}</a>
