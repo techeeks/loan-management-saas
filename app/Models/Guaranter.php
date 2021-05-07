@@ -18,6 +18,10 @@ class Guaranter extends Model
         'display_name',
         'phone',
     ];
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
    
    

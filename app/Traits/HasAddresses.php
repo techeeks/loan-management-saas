@@ -67,6 +67,12 @@ trait HasAddresses
             ? $this->addresses()->whereRole('billing')->first()
             : new Address();
     }
+    public function getGurantorAttribute(): ?Model
+    {
+        return $this->hasAddress('gurantor') 
+            ? $this->addresses()->whereRole('gurantor')->first()
+            : new Address();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Model|null

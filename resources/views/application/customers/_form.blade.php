@@ -95,13 +95,13 @@
                 <div class="col">
                     <div class="form-group required">
                         <label for="guarantor_name">{{ __('messages.guarantor_name') }}</label>
-                        <input name="guarantor_name" type="text" class="form-control" placeholder="{{ __('messages.guarantor_name') }}" required>
+                        <input name="guarantor_name" type="text" value="{{  $customer->guarantors->display_name }}" class="form-control" placeholder="{{ __('messages.guarantor_name') }}" required>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
                         <label for="guarantor_phone">{{ __('messages.phone') }}</label>
-                        <input name="guarantor_phone" type="text" class="form-control" placeholder="{{ __('messages.phone') }}">
+                        <input name="guarantor_phone" value="{{  $customer->guarantors->phone }}" type="text" class="form-control" placeholder="{{ __('messages.phone') }}">
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                         <select id="gurantor[country_id]" name="gurantor[country_id]" data-toggle="select" class="form-control select2-hidden-accessible" data-select2-id="billing[country_id]" required>
                             <option disabled selected>{{ __('messages.select_country') }}</option>
                             @foreach(get_countries_select2_array() as $option)
-                                <option value="{{ $option['id'] }}" >{{ $option['text'] }}</option>
+                                <option value="{{ $option['id'] }}" {{ $customer->guarantors->gurantor->country_id == $option['id'] ? 'selected=""' : '' }}>{{ $option['text'] }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -121,7 +121,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label for="gurantor[state]">{{ __('messages.state') }}</label>
-                        <input name="gurantor[state]" type="text" class="form-control"  placeholder="{{ __('messages.state') }}">
+                        <input name="gurantor[state]" type="text" value="{{  $customer->guarantors->gurantor->state }}" class="form-control"  placeholder="{{ __('messages.state') }}">
                     </div>
                 </div>
             </div>
@@ -130,20 +130,20 @@
                 <div class="col">
                     <div class="form-group">
                         <label for="gurantor[city]">{{ __('messages.city') }}</label>
-                        <input name="gurantor[city]" type="text" class="form-control" placeholder="{{ __('messages.city') }}">
+                        <input name="gurantor[city]" type="text" class="form-control" value="{{  $customer->guarantors->gurantor->city }}" placeholder="{{ __('messages.city') }}">
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
                         <label for="gurantor[zip]">{{ __('messages.postal_code') }}</label>
-                        <input name="gurantor[zip]" type="text" class="form-control" placeholder="{{ __('messages.postal_code') }}">
+                        <input name="gurantor[zip]" type="text" value="{{  $customer->guarantors->gurantor->zip }}" class="form-control" placeholder="{{ __('messages.postal_code') }}">
                     </div>
                 </div>
             </div>
 
             <div class="form-group required">
                 <label for="gurantor[address_1]">{{ __('messages.address') }}</label>
-                <textarea name="gurantor[address_1]" class="form-control" rows="2" placeholder="{{ __('messages.address') }}" required></textarea>
+                <textarea name="gurantor[address_1]" class="form-control" rows="2" placeholder="{{ __('messages.address') }}" required>{{  $customer->guarantors->gurantor->address_1 }}</textarea>
             </div>
         </div>
     </div> 

@@ -41,8 +41,6 @@ class Update extends FormRequest
             'guarantor_name'=>'required|string|max:190',
 
 
-            'billing.name' => 'required|string|max:190',
-            'billing.phone' => 'nullable|string|max:190',
             'billing.country_id' => 'required|integer',
             'billing.state' => 'nullable|string|max:190',
             'billing.city' => 'nullable|string|max:190',

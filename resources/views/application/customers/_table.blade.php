@@ -5,7 +5,7 @@
                 <tr>
                     <th class="w-30px" class="text-center">{{ __('messages.#id') }}</th>
                     <th>{{ __('messages.display_name') }}</th>
-                    <th>{{ __('messages.contact_name') }}</th>
+                    <th>{{ __('messages.email') }}</th>
                     <th class="text-center width: 120px;">{{ __('messages.created_at') }}</th>
                     <th class="w-50px">{{ __('messages.view') }}</th>
                 </tr>
@@ -31,12 +31,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="material-icons icon-16pt mr-1 text-muted">person</i>
-                                    <p class="text-muted mb-0">{{ $customer->contact_name }}</p>
-                                </div>
-                            </div> 
+                           
                             <div class="d-flex align-items-center">
                                 <small class="text-muted">
                                     <i class="material-icons icon-16pt mr-1">email</i>

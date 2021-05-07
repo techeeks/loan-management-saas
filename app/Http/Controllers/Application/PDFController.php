@@ -248,9 +248,11 @@ class PDFController extends Controller
     {
         $payment = LoanPayment::find($request->payment);
         $loan=LoanRequest::find($payment->loan_id);
-        $company = $payment->company;
-        $customer = $payment->customer;
-
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $company = $loan->company;
+        // echo '<pre>',print_r($company);exit;
+       
         //Create a new pdf instance
         $pdf = new PDFService("A4");
 

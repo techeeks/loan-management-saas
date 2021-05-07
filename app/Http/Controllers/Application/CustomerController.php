@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Application;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Requests\Application\Customer\Store;
 use App\Http\Requests\Application\Customer\Update;
@@ -12,6 +11,7 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Customer;
 use App\Models\Guaranter;
 
 class CustomerController extends Controller
@@ -52,6 +52,7 @@ class CustomerController extends Controller
     public function create()
     {
         $customer = new Customer();
+        $customer->guarantors= new Guaranter();
  
         return view('application.customers.create', [
             'customer' => $customer,
@@ -85,13 +86,19 @@ class CustomerController extends Controller
         $guranterAddress["name"]=$gurantor->display_name;
         $gurantor->address('gurantor', $guranterAddress);
         // Create Customer and Store in Database
-        $customer = Customer::create([
-            'guarantor_id '=>1,
-            'company_id' => $currentCompany->id,
-            'display_name' => $request->display_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            ]);
+        $customer = new Customer();
+            // 'guarantor_id '=>1,
+            // 'company_id' =>$currentCompany->id,
+            // 'display_name' =>$request->display_name,
+            // 'email' =>$request->email,
+            // 'phone' =>$request->phone,
+            // ]);
+            $customer->guarantor_id=$gurantor->id;
+            $customer->company_id=$currentCompany->id;
+            $customer->display_name=$request->display_name;
+            $customer->email=$request->email;
+            $customer->phone=$request->phone;
+            $customer->save();
             // echo $gurantor->id;exit;
             // echo '<pre>',print_r($customer);exit;
             
@@ -140,6 +147,8 @@ class CustomerController extends Controller
         ->where('loan_requests.customer_id',$customer->id)->select('loan_requests.reference_number','loan_payments.*','payment_methods.name as payment_method','currencies.symbol as currency_code')->orderBy('created_at',"DESC")->get();
         // echo '<pre>',print_r($payments);exit;
         $payment_prefix = $currentCompany->getSetting('payment_prefix');
+        $gurantor=$customer->guarantor()->get();
+    // print_r($customer->guarantors->gurantor);exit;
         return view('application.customers.details', [
             'customer' => $customer,
             'invoices' => $invoices,
@@ -150,6 +159,7 @@ class CustomerController extends Controller
             'payments'=>$payments,
             'payment_prefix' => $payment_prefix,
             'totalDue'=>$totalDue,
+            'gurantor'=>$gurantor,
         ]);
     }
 
@@ -163,8 +173,8 @@ class CustomerController extends Controller
     public function edit(Request $request)
     {
         $customer = Customer::findOrFail($request->customer);
-        $gurantor=$customer->guarantor()->get();
-        echo '<pre>',print_r($gurantor);exit;
+        $gurantor=$customer->guarantor;
+        // echo '<pre>',print_r($gurantor->gurantor);exit;
         
         // Fill model with old input
         if (!empty($request->old())) {
@@ -189,21 +199,25 @@ class CustomerController extends Controller
         $currentCompany = $user->currentCompany();
 
         $customer = Customer::findOrFail($request->customer);
-
+        $gurantor=Guaranter::find($customer->guarantor_id);
+        $gurantor->update(['display_name'=>$request->guarantor_name,'phone'=>$request->guarantor_phone,]);
+        $guranterAddress=$request->input('gurantor');
+        $guranterAddress["name"]=$gurantor->display_name;
+        $gurantor->updateAddress('gurantor', $guranterAddress);
         // Update Customer in Database
-        $customer->update([
-            'display_name' => $request->display_name,
-            'contact_name' => $request->contact_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'website' => $request->website,
-            'currency_id' => $request->currency_id,
-            'vat_number' => $request->vat_number,
-        ]);
+        $customer->guarantor_id=$gurantor->id;
+        $customer->company_id=$currentCompany->id;
+        $customer->display_name=$request->display_name;
+        $customer->email=$request->email;
+        $customer->phone=$request->phone;
+        $customer->save();
 
+        $billing=$request->input('billing');
+        $billing["name"]=$customer->display_name;
+        $customer->updateAddress('billing', $billing);
         // Update Customer's billing and shipping addresses
-        $customer->updateAddress('billing', $request->input('billing'));
        // $customer->updateAddress('shipping', $request->input('shipping'));
+       
 
         // Update custom field values
         $customer->updateCustomFields($request->custom_fields);
@@ -253,6 +267,14 @@ class CustomerController extends Controller
         // Delete Customer's Addresses from Database
         if ($customer->addresses()->exists()) {
             $customer->addresses()->delete();
+        }
+        if($customer->guarantors->addresses()->exists()){
+            $customer->guarantors->addresses()->delete();
+        }
+        
+        if($customer->guarantors->exists())
+        {
+            $customer->guarantors->delete();
         }
 
         // Delete Customer from Database

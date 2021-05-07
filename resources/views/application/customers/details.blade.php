@@ -43,13 +43,13 @@
                     <div class="col-3 col-md-3 mt-4 mb-4">
                         <h5>{{ __('messages.guarantor_details') }}</h5>
                         <p class="mb-1">
-                            <strong>{{ __('messages.name') }}:</strong> {{ $customer->display_name }} <br>
+                            <strong>{{ __('messages.name') }}:</strong> {{ $customer->guarantors->display_name }} <br>
                         </p>
                         <p class="mb-1">
-                            <strong>{{ __('messages.phone') }}:</strong> {{ $customer->phone }} <br>
+                            <strong>{{ __('messages.phone') }}:</strong> {{ $customer->guarantors->phone }} <br>
                         </p>
                         <p>
-                            <strong>{{ __('messages.billing') }}:s</strong> {{ $customer->displayLongAddress('billing') }}
+                            <strong>{{ __('messages.billing') }}:</strong> {{ $customer->guarantors->displayLongAddress('gurantor') }}
                         </p>
                     </div>
                     <div class="col-3 col-md-3 mt-4 mb-4">

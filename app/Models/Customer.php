@@ -26,7 +26,6 @@ class Customer extends Model
         'phone',
         'website',
         'currency_id',
-        'vat_number',
         'guarantor_id',
     ];
 
@@ -104,6 +103,10 @@ class Customer extends Model
     public function guarantor()
     {
         return $this->belongsTo(Guaranter::class);
+    }
+    public function guarantors()
+    {
+        return $this->belongsTo("App\Models\Guaranter",'guarantor_id','id');
     }
     /**
      * Scope a query to only include Customers of a given company.

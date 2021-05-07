@@ -22,11 +22,9 @@ class Activity extends Model implements ActivityContract
         if (! isset($this->connection)) {
             $this->setConnection(config('activitylog.database_connection'));
         }
-
         if (! isset($this->table)) {
             $this->setTable(config('activitylog.table_name'));
         }
-
         parent::__construct($attributes);
     }
 
