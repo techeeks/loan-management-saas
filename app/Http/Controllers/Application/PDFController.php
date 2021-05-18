@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Application;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Estimate;
 use App\Models\Payment;
@@ -169,7 +170,6 @@ class PDFController extends Controller
         $pdf->setFrom([
             $company->name,
             $company->billing->address_1,
-            $company->billing->address_2,
             $company->billing->city ?? '' . $company->billing->state ?? '',
             $company->billing->country->name ?? '',
             $company->billing->phone ?? '',
@@ -249,9 +249,11 @@ class PDFController extends Controller
         $payment = LoanPayment::find($request->payment);
         $loan=LoanRequest::find($payment->loan_id);
         $user = $request->user();
+        $customer=Customer::find($loan->customer_id);
         $currentCompany = $user->currentCompany();
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
         $company = $loan->company;
-        // echo '<pre>',print_r($company);exit;
+        // echo '<pre>',print_r($customer);exit;
        
         //Create a new pdf instance
         $pdf = new PDFService("A4");
@@ -264,24 +266,48 @@ class PDFController extends Controller
 
         //Set type
         $pdf->setType(__('messages.payment_receipt_upper_case'));
+        $pdf->setReference($payment_prefix.'-'.$payment->payment_number);
 
         // Hide headers
-        $pdf->setHideHeader(true);
-
+        
+        $pdf->setFrom([
+            $company->name,
+            $company->billing->address_1 ?? '' ,
+            $company->billing->city ?? '' . $company->billing->state ?? '',
+            $company->billing->country->name ?? '',
+            $company->billing->phone ?? '',
+            $company->vat_number ? __('messages.vat_number') . ' ' . $company->vat_number : '',
+            '',
+            ]);
+            
+            //Set to
+        $pdf->setTo([
+            $customer->display_name,
+            $customer->email,
+            $customer->phone,
+            $customer->billing->address_1 ?? '',
+            $customer->billing->city ?? '' . $customer->billing->state ?? '',
+            $customer->billing->country->name ?? '',
+            '',
+            ]);
+            // $pdf->setHideHeader(false);
         // Set Sub Total
         $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
-        $pdf->addTotal(__('messages.payment_#'), $payment->payment_number);
+        $pdf->addTotal(__('messages.payment_#'), $payment_prefix.'-'.$payment->payment_number);
         $pdf->addTotal(__('messages.loan_reference_number'), $loan->reference_number);
-        $pdf->addTotal(__('messages.payment_mode'), $payment->payment_method->name ?? '');
+        $pdf->addTotal(__('messages.payment_method'), $payment->payment_method->name ?? '');
 
         // Set Total
-        $pdf->addTotal(__('messages.amount'), money($payment->amount,$loan->currency->code)->format(), true);
+        $pdf->addTotal(__('messages.total'), currencyFormat($loan->amount,$loan->currency->symbol));
+        $pdf->addTotal(__('messages.paid_amount'), currencyFormat($payment->amount,$loan->currency->symbol));
+        $pdf->addTotal(__('messages.due_amount'), currencyFormat($loan->amount-$loan->totalPaid($loan->id),$loan->currency->symbol), true);
+        
 
         //Add notes
         $pdf->addParagraph($payment->notes);
 
         //Set footernote
-        // $pdf->setFooternote($company->getSetting('payment_footer'));
+        // $pdf->setFooternote("any");
 
         //Render or Download
         if($request->has('download')) {

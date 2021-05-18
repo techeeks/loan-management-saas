@@ -131,11 +131,13 @@ class PDFService extends PDF_ImageAlpha
 
     function setFrom($data)
     {
+        // print_r($data);exit;
         $this->from = $data;
     }
 
     function setTo($data)
     {
+        // echo '<pre>',print_r($data);exit;
         $this->to = $data;
     }
 

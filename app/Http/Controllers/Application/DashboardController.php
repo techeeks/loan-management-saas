@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\Estimate;
 use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\LoanPayment;
+use App\Models\LoanRequest;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -31,6 +33,11 @@ class DashboardController extends Controller
         $invoicesCount = Invoice::findByCompany($company->id)->count();
         $estimatesCount = Estimate::findByCompany($company->id)->count();
         $totalDueAmount = Invoice::findByCompany($company->id)->active()->sum('due_amount');
+        $totalLoan=LoanRequest::where('company_id',$company->id)->sum('amount');
+        $totalPayments=LoanPayment::where('company_id',$company->id)->sum('amount');
+        $totalDueLoans=LoanRequest::where(['company_id'=>$company->id])->where('return_date','<',date('Y-m-d'))->count();
+        $dueLoans=LoanRequest::where(['company_id'=>$company->id])->where('return_date','<',date('Y-m-d'))->orderBy('id','DESC')->take(10)->get();
+        $paymentList=LoanPayment::findByCompany($company->id)->orderBy('id','DESC')->take(10)->get();
 
         // Due Invoices and Estimates
         $dueInvoices = Invoice::findByCompany($company->id)->active()->where('due_amount', '>', 0)->take(5)->latest()->get();
@@ -55,6 +62,8 @@ class DashboardController extends Controller
         // Arrays for Expenses Chart
         $expense_stats_label = [];
         $expense_stats = [];
+        $loan_stats=[];
+        $payment_stats=[];
 
         // Iterate over the Date Period 
         foreach ($period as $date) {
@@ -67,9 +76,21 @@ class DashboardController extends Controller
                 ->get(['amount', 'expense_date'])
                 ->whereBetween('expense_date', [$date->format('Y-m-d'), $date->endOfMonth()->format('Y-m-d')])
                 ->sum('amount');
-            array_push($expense_stats, $expense/100);
-        }
+                array_push($expense_stats, $expense/100);
+            $loanPerMonth=LoanRequest::where('company_id',$company->id)
+            ->whereMonth('loan_date',  $date->format('m'))
+            ->whereYear('loan_date',$date->format('Y'))
+            ->sum('amount');
+             array_push($loan_stats, $loanPerMonth);
+            $paymentPerMonth=LoanPayment::where('company_id',$company->id)->whereMonth('payment_date',  $date->format('m'))
+            ->whereYear('payment_date',$date->format('Y'))
+            ->sum('amount');
+            array_push($payment_stats, $paymentPerMonth);
 
+        }
+        // echo '<pre>',print_r($loan_stats);exit;
+
+        
         // return dashboard view with params
         return view('application.dashboard.index', [
             'customersCount' => $customersCount,
@@ -81,6 +102,14 @@ class DashboardController extends Controller
             'expense_stats_label' => $expense_stats_label,
             'expense_stats' => $expense_stats,
             'currency_code' => $company->currency->code,
+            'total_loan'=>$totalLoan,
+            'total_payments'=>$totalPayments,
+            'total_due'=>$totalDueLoans,
+            'loan_per_month'=>$loan_stats,
+            'payments_per_moth'=>$payment_stats,
+            'due_loans'=>$dueLoans,
+            'payments'=>$paymentList,
+            'payment_prefix'=>$payment_prefix = $company->getSetting('payment_prefix'),
         ]);
     }
 }
