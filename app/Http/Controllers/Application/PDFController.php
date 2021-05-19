@@ -316,4 +316,88 @@ class PDFController extends Controller
             $pdf->render($payment->payment_number . '.pdf', 'I');
         }
     }
+
+    public function loan(Request $request)
+    {
+       
+        $loan=LoanRequest::find($request->loan);
+        $LoanAmount=$loan->amount;
+        $user = $request->user();
+        $customer=Customer::find($loan->customer_id);
+        $payments=LoanPayment::where('loan_id',$loan->id)->orderBy('id','DESC')->get();
+        $currentCompany = $user->currentCompany();
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
+        $company = $loan->company;
+        // echo '<pre>',print_r($customer);exit;
+       
+        //Create a new pdf instance
+        $pdf = new PDFService("A4");
+
+        //Set your logo
+        $pdf->setLogo($company->avatar, 180, 100);
+
+        //Set theme color
+        $pdf->setColor($company->getSetting('payment_color'));
+
+        //Set type
+        $pdf->setType(__('messages.loan_receipt_upper_case'));
+        $pdf->setReference($loan->reference_number);
+
+        $pdf->setLoanDate($loan->loan_date);
+
+        //Set  due date
+        $pdf->setDue($loan->return_date);
+
+        // Hide headers
+        
+        $pdf->setFrom([
+            $company->name,
+            $company->billing->address_1 ?? '' ,
+            $company->billing->city ?? '' . $company->billing->state ?? '',
+            $company->billing->country->name ?? '',
+            $company->billing->phone ?? '',
+            $company->vat_number ? __('messages.vat_number') . ' ' . $company->vat_number : '',
+            '',
+            ]);
+            
+            //Set to
+        $pdf->setTo([
+            $customer->display_name,
+            $customer->email,
+            $customer->phone,
+            $customer->billing->address_1 ?? '',
+            $customer->billing->city ?? '' . $customer->billing->state ?? '',
+            $customer->billing->country->name ?? '',
+            '',
+            ]);
+               
+            $pdf->addLoan($loan);
+            // $pdf->setHideHeader(false);
+            foreach($payments as $payment){
+        // Set Sub Total
+       
+                $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
+                $pdf->addTotal(__('messages.payment_#'), $payment_prefix.'-'.$payment->payment_number);
+                $pdf->addTotal(__('messages.payment_method'), $payment->payment_method->name ?? '');
+
+                // // Set Total
+                $pdf->addTotal(__('messages.total'), $loan->amount);
+                $pdf->addTotal(__('messages.paid_amount'), currencyFormat($payment->amount,$loan->currency->symbol));
+                $pdf->addTotal(__('messages.due_amount'), currencyFormat($LoanAmount-$payment->amount,$loan->currency->symbol), true);
+            }
+        
+
+        // //Add notes
+        // $pdf->addParagraph($payment->notes);
+
+        //Set footernote
+        // $pdf->setFooternote("any");
+
+        //Render or Download
+        if($request->has('download')) {
+            $pdf->render($loan->reference_number . '.pdf', 'D');
+        } else {
+            $pdf->render($loan->reference_number . '.pdf', 'I');
+        }
+    }
 }

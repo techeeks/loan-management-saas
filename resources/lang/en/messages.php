@@ -668,7 +668,6 @@ return [
     'vendor_exists' => 'Vendor with this email is already exist.',
     'fix_errors' => 'An error occured. Please fix errors below to continue.',
     'transaction_reference'=>'Transcation Reference',
-    'reference_number'=>'Reference Number',
     'loans'=>"Loans",
     'pay_with_voucher'=>"Pay with Voucher",
     'create_voucher'=>'Create Subscription Voucher',
@@ -696,4 +695,11 @@ return [
     'latest_repayment'=>'Latest Repayment',
     'payment_invoice'=>'Payment Invoice',
     'paid_amount'=>"Amount Paid",
+    'loan_invoice'=>'Loan Invoice',
+    'loan_receipt_upper_case'=>'LOAN RECEIPT',
+    'borrowed_date'=>"Borrowed Date",
+    'reference'=>'REFERENCE',
+    'borrowed_amount'=>"Borrowed Amount",
+    'total_paid'=>"Paid Amount",
+
 ];

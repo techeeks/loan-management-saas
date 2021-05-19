@@ -94,4 +94,13 @@ class LoanRequestController extends Controller
         session()->flash('alert-success', __('messages.loan_deleted'));
         return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
     }
+    public function detail(Request $request)
+    {
+        echo $request->loan;
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $loan=LoanRequest::find($request->loan); 
+        // echo '<pre>',print_r($loan);exit;
+        return view('application.loan_requests.detail',compact('loan'));
+    }
 }

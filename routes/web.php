@@ -14,6 +14,7 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/viewer/invoice/{invoice}/pdf', 'Application\PDFController@invoice')->name('pdf.invoice');
 Route::get('/viewer/estimate/{estimate}/pdf', 'Application\PDFController@estimate')->name('pdf.estimate');
 Route::get('/viewer/payment/{payment}/pdf', 'Application\PDFController@payment')->name('pdf.payment');
+Route::get('/viewer/loan/{loan}/pdf', 'Application\PDFController@Loan')->name('pdf.loan');
 
 // Super Admin Panel
 Route::group(['namespace' => 'SuperAdmin', 'prefix' => '/admin', 'middleware' => ['installed', 'auth', 'super_admin']], function () {
@@ -141,9 +142,9 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::get('{id}/edit', 'LoanRequestController@edit' )->name('loan.requests.edit');
         Route::get('{id}/delete', 'LoanRequestController@delete' )->name('loan.requests.delete');
         Route::get('{id}/add-payment', 'LoanRequestController@newPayment' )->name('loan.requests.add.payment');
-        Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.detail');
+        // Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.detail');
         Route::post('{id}/update', 'LoanRequestController@update' )->name('loan.requests.update');
-        Route::get('{id}/detail', 'LoanRequestController@detail' )->name('loan.requests.details');
+        Route::get('{loan}/detail', 'LoanRequestController@detail' )->name('loan.requests.details');
         Route::get('add-new', 'LoanRequestController@add' )->name('loan.requests.create');
     });
     // Estimates

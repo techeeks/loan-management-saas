@@ -29,10 +29,12 @@ class PDFService extends PDF_ImageAlpha
     var $issuingDate;
     var $fromDate;
     var $toDate;
+    var $loanDate;
     var $due;
     var $from;
     var $to;
     var $items;
+    var $loan;
     var $totals;
     var $badge;
     var $addText;
@@ -93,6 +95,10 @@ class PDFService extends PDF_ImageAlpha
     function setDate($date)
     {
         $this->date = $date;
+    }
+    function setLoanDate($date)
+    {
+        $this->loanDate=$date;
     }
 
     function setIssuingDate($issuingDate)
@@ -214,6 +220,28 @@ class PDFService extends PDF_ImageAlpha
 
         $this->items[] = $p;
     }
+    function addLoan($data)
+    {
+        // echo currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
+        // echo '<pre>',print_r($data);exit;
+        // $this->firstColumn = 38;
+        $this->loan=$data;
+        $this->loan["total_paid"]=currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
+        $this->loan["balance"]=currencyFormat($data->amount-$data->totalPaid($data->id),$data->currency->symbol);
+        $this->loan['amount']=currencyFormat($data->amount,$data->currency->symbol);
+        // echo $this->loan["id"];
+    }
+    function addPayment($data)
+    {
+        // echo currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
+        // echo '<pre>',print_r($data);exit;
+        // $this->firstColumn = 38;
+        $this->loan=$data;
+        $this->loan["total_paid"]=currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
+        $this->loan["balance"]=currencyFormat($data->amount-$data->totalPaid($data->id),$data->currency->symbol);
+        $this->loan['amount']=currencyFormat($data->amount,$data->currency->symbol);
+        // echo $this->loan["id"];
+    }
 
     function addReportItem($item, $description, $total, $colored = false)
     {
@@ -318,6 +346,16 @@ class PDFService extends PDF_ImageAlpha
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFont($this->font, '', 9);
                 $this->Cell(0, $lineheight, $this->date, 0, 1, 'R');
+            }
+
+            if ($this->loanDate) {
+                $this->Cell($positionX, $lineheight);
+                $this->SetFont($this->font, 'B', 9);
+                $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
+                $this->Cell(32, $lineheight, strtoupper($this->l['loan_date']) . ':', 0, 0, 'L');
+                $this->SetTextColor(50, 50, 50);
+                $this->SetFont($this->font, '', 9);
+                $this->Cell(0, $lineheight, $this->loanDate, 0, 1, 'R');
             }
 
             // Issuing Date
@@ -547,6 +585,48 @@ class PDFService extends PDF_ImageAlpha
                 $this->Cell($width_other, 10, strtoupper($this->l['total']), 0, 0, 'C', 1);
                 $this->Ln();
             }
+            if ($this->loan) {
+               
+
+
+                $width_other = ($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1);
+
+                $this->SetFillColor($this->color[0], $this->color[1], $this->color[2]);
+                $this->SetTextColor(255, 255, 255);
+
+                $this->Ln(12);
+                $this->SetFont($this->font, 'B', 9);
+                $this->Cell(1, 10, '', 0, 0, 'L', 1);
+
+                $this->Cell(40, 10, strtoupper($this->l['reference_number']), 0, 0, 'L', 1);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper($this->l['loan_date']), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper($this->l['due_date']), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+              
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell(40, 10, strtoupper($this->l['borrowed_amount']), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                
+
+                             
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper($this->l['paid_amount']), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper($this->l['due_amount']), 0, 0, 'C', 1);
+                $this->Ln();
+
+                
+            }
+            
         }
     }
 
@@ -629,6 +709,7 @@ class PDFService extends PDF_ImageAlpha
                 $this->Ln($this->columnSpacing);
             }
         }
+        
 
         if ($this->reportItems) {
             foreach ($this->reportItems as $item) {
@@ -686,6 +767,49 @@ class PDFService extends PDF_ImageAlpha
                 $this->Ln($this->columnSpacing);
             }
         }
+        if ($this->loan) {
+           
+               
+            $cHeight = $cellHeight;
+            $this->SetFont($this->font, 'b', 8);
+            $this->SetTextColor(50, 50, 50);
+            $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
+            $this->Cell(1, $cHeight, '', 0, 0, 'L', 1);
+            $x = $this->GetX();
+            $this->Cell(40, $cHeight, $this->loan['reference_number'], 0, 0, 'L', 1);
+            
+            $this->SetTextColor(50, 50, 50);
+            $this->SetFont($this->font, '', 8);
+
+            $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, $cHeight, $this->loan['loan_date'], 0, 0, 'C', 1);
+
+            $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, $cHeight, $this->loan['return_date'], 0, 0, 'C', 1);
+
+            $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+            $this->Cell(40, $cHeight, $this->loan['amount'], 0, 0, 'C', 1);
+            
+
+            $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, $cHeight, $this->loan['total_paid'], 0, 0, 'C', 1);
+
+            $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, $cHeight, $this->loan['balance'], 0, 0, 'C', 1);
+            $this->Ln();
+            $this->Ln($this->columnSpacing);
+            $this->Ln();
+            $this->Ln($this->columnSpacing); 
+            $this->Ln();
+            $this->Ln($this->columnSpacing);
+            $this->SetFont($this->font, 'b', 12);
+            
+            // $this->SetFillColor($this->color[1], $this->color[2], $this->color[2]);
+            $this->SetTextColor(0, 0, 0);
+            // $this->Cell(1, 6, '', 0, 0, 'L', 1);
+            $this->Cell(0, 6, strtoupper("Repayments"), 0, 1, 'L',0);
+            
+        }
 
         $badgeX = $this->getX();
 
@@ -696,11 +820,6 @@ class PDFService extends PDF_ImageAlpha
             foreach ($this->totals as $total) {
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
-                $this->Cell(1 + $this->firstColumnWidth, $cellHeight, '', 0, 0, 'L', 0);
-                for ($i = 0; $i < $this->columns - 3; $i++) {
-                    $this->Cell($width_other, $cellHeight, '', 0, 0, 'L', 0);
-                    $this->Cell($this->columnSpacing, $cellHeight, '', 0, 0, 'L', 0);
-                }
                 $this->Cell($this->columnSpacing, $cellHeight, '', 0, 0, 'L', 0);
                 if ($total['colored']) {
                     $this->SetTextColor(255, 255, 255);
@@ -708,7 +827,7 @@ class PDFService extends PDF_ImageAlpha
                 }
                 $this->SetFont($this->font, 'b', 8);
                 $this->Cell(1, $cellHeight, '', 0, 0, 'L', 1);
-                $this->Cell($width_other - 1, $cellHeight, $total['name'], 0, 0, 'L', 1);
+                $this->Cell($width_other , $cellHeight, $total['name'], 0, 0, 'L', 1);
                 $this->Cell($this->columnSpacing, $cellHeight, '', 0, 0, 'L', 0);
                 $this->SetFont($this->font, 'b', 8);
                 $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
@@ -802,14 +921,15 @@ class PDFService extends PDF_ImageAlpha
     {
         $this->language = $language;
         $l = [];
-        $l['number'] = __('messages.invoice_id');
+        $l['number'] = __('messages.reference');
         $l['date'] = __('messages.billing_date');
         $l['issuing_date'] = __('messages.issuing_date');
+        $l['loan_date']=__('messages.borrowed_date');
         $l['from_date'] = __('messages.start_date');
         $l['to_date'] = __('messages.end_date');
         $l['due'] = __('messages.due_date');
-        $l['to'] = __('messages.billing_to');
-        $l['from'] = __('messages.billing_from');
+        $l['to'] = __('messages.customer');
+        $l['from'] = __('messages.company');
         $l['product'] = __('messages.product');
         $l['amount'] = __('messages.quantity');
         $l['price'] = __('messages.price');
@@ -818,6 +938,12 @@ class PDFService extends PDF_ImageAlpha
         $l['total'] = __('messages.total');
         $l['page'] = __('messages.page');
         $l['page_of'] = __('messages.of');
+        $l['reference_number']=__('messages.reference_number');
+        $l['loan_date']=__('messages.loan_date');
+        $l['due_date']=__('messages.due_date');
+        $l['paid_amount']=__('messages.total_paid');
+        $l['due_amount']=__('messages.due_amount');
+        $l['borrowed_amount']=__('messages.borrowed_amount');
         $this->l = $l;
     }
 
