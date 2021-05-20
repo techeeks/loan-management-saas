@@ -15,7 +15,7 @@ class PDFService extends PDF_ImageAlpha
     var $margins = array('l' => 20, 't' => 20, 'r' => 20);
     var $hide_header = false;
     var $angle = 0;
-
+    var $repayments;
     var $l;
     var $document;
     var $type;
@@ -137,13 +137,13 @@ class PDFService extends PDF_ImageAlpha
 
     function setFrom($data)
     {
-        // print_r($data);exit;
+       
         $this->from = $data;
     }
 
     function setTo($data)
     {
-        // echo '<pre>',print_r($data);exit;
+        
         $this->to = $data;
     }
 
@@ -222,25 +222,27 @@ class PDFService extends PDF_ImageAlpha
     }
     function addLoan($data)
     {
-        // echo currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
-        // echo '<pre>',print_r($data);exit;
-        // $this->firstColumn = 38;
+
         $this->loan=$data;
         $this->loan["total_paid"]=currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
         $this->loan["balance"]=currencyFormat($data->amount-$data->totalPaid($data->id),$data->currency->symbol);
         $this->loan['amount']=currencyFormat($data->amount,$data->currency->symbol);
-        // echo $this->loan["id"];
     }
-    function addPayment($data)
+    function addPayment($data,$loanedAmount,$loanCurrencySymbol,$payment_prefix)
     {
-        // echo currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
-        // echo '<pre>',print_r($data);exit;
-        // $this->firstColumn = 38;
-        $this->loan=$data;
-        $this->loan["total_paid"]=currencyFormat($data->totalPaid($data->id),$data->currency->symbol);
-        $this->loan["balance"]=currencyFormat($data->amount-$data->totalPaid($data->id),$data->currency->symbol);
-        $this->loan['amount']=currencyFormat($data->amount,$data->currency->symbol);
-        // echo $this->loan["id"];
+        $paymentsArr=array();
+        $remaning=0;
+        foreach($data as $pay){
+            $remaning=$remaning+$pay->amount;
+            $paymentsArr["total_amount"]=currencyFormat($loanedAmount,$loanCurrencySymbol);
+            $paymentsArr["balance"]=currencyFormat($loanedAmount-$remaning,$loanCurrencySymbol);
+            $paymentsArr["amount"]=currencyFormat($pay->amount,$loanCurrencySymbol);
+            $paymentsArr["payment_number"]=$payment_prefix.'-'.$pay->payment_number;
+            $paymentsArr["payment_method"]=$pay->payment_method;
+            $paymentsArr["payment_date"]=$pay->payment_date;
+            $this->repayments[]=$paymentsArr;
+        }
+        // echo '<pre>',print_r($this->repayments);exit;
     }
 
     function addReportItem($item, $description, $total, $colored = false)
@@ -626,6 +628,7 @@ class PDFService extends PDF_ImageAlpha
 
                 
             }
+           
             
         }
     }
@@ -800,21 +803,86 @@ class PDFService extends PDF_ImageAlpha
             $this->Ln($this->columnSpacing);
             $this->Ln();
             $this->Ln($this->columnSpacing); 
-            $this->Ln();
-            $this->Ln($this->columnSpacing);
             $this->SetFont($this->font, 'b', 12);
             
             // $this->SetFillColor($this->color[1], $this->color[2], $this->color[2]);
             $this->SetTextColor(0, 0, 0);
             // $this->Cell(1, 6, '', 0, 0, 'L', 1);
-            $this->Cell(0, 6, strtoupper("Repayments"), 0, 1, 'L',0);
             
         }
+        if ($this->repayments) {
+            $width_other = ($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1);
+            
+            $this->Cell(0, 6, strtoupper("Repayments"), 0, 1, 'L',0);
+            $this->SetFillColor($this->color[0], $this->color[1], $this->color[2]);
+            $this->SetTextColor(255, 255, 255);
+            
+                // $this->Ln(12);
+                $this->SetFont($this->font, 'B', 9);
+                $this->Cell(1, 10, '', 0, 0, 'L', 1);
 
+                $this->Cell(30, 10, strtoupper(__('messages.payment_#')), 0, 0, 'L', 1);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell(30, 10, strtoupper(__('messages.payment_date')), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell(40, 10, strtoupper(__('messages.payment_method')), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+              
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper(__('messages.total')), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                
+
+                             
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper(__('messages.paid_amount')), 0, 0, 'C', 1);
+                // $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+
+                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, 10, strtoupper(__('messages.due_amount')), 0, 0, 'C', 1);
+                $this->Ln();
+            foreach($this->repayments as $paymeent){
+                $cHeight = $cellHeight;
+                // echo '<pre>',print_r($paymeent);exit;              
+                $this->SetFont($this->font, 'b', 8);
+                $this->SetTextColor(50, 50, 50);
+                $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
+                $this->Cell(1, $cHeight, '', 0, 0, 'L', 1);
+                $x = $this->GetX();
+                $this->Cell(30, $cHeight,$paymeent["payment_number"], 0, 0, 'L', 1);
+                
+                $this->SetTextColor(50, 50, 50);
+                $this->SetFont($this->font, '', 8);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell(30, $cHeight, $paymeent["payment_date"], 0, 0, 'C', 1);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell(40, $cHeight, $paymeent["payment_method"]->name, 0, 0, 'C', 1);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight,$paymeent["total_amount"], 0, 0, 'C', 1);
+                
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight,$paymeent['amount'], 0, 0, 'C', 1);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight, $paymeent['balance'], 0, 0, 'C', 1);
+                $this->Ln();
+                $this->Ln($this->columnSpacing);
+            }
+        }
+        
         $badgeX = $this->getX();
-
+        
         $badgeY = $this->getY();
-
+        
         //Add totals
         if ($this->totals) {
             foreach ($this->totals as $total) {

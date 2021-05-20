@@ -290,30 +290,32 @@ class PDFController extends Controller
             $customer->billing->country->name ?? '',
             '',
             ]);
+            $paymentem[]=$payment;
+        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix);
             // $pdf->setHideHeader(false);
         // Set Sub Total
-        $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
-        $pdf->addTotal(__('messages.payment_#'), $payment_prefix.'-'.$payment->payment_number);
-        $pdf->addTotal(__('messages.loan_reference_number'), $loan->reference_number);
-        $pdf->addTotal(__('messages.payment_method'), $payment->payment_method->name ?? '');
+        // $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
+        // $pdf->addTotal(__('messages.payment_#'), $payment_prefix.'-'.$payment->payment_number);
+        // $pdf->addTotal(__('messages.loan_reference_number'), $loan->reference_number);
+        // $pdf->addTotal(__('messages.payment_method'), $payment->payment_method->name ?? '');
 
-        // Set Total
-        $pdf->addTotal(__('messages.total'), currencyFormat($loan->amount,$loan->currency->symbol));
-        $pdf->addTotal(__('messages.paid_amount'), currencyFormat($payment->amount,$loan->currency->symbol));
-        $pdf->addTotal(__('messages.due_amount'), currencyFormat($loan->amount-$loan->totalPaid($loan->id),$loan->currency->symbol), true);
+        // // Set Total
+        // $pdf->addTotal(__('messages.total'), currencyFormat($loan->amount,$loan->currency->symbol));
+        // $pdf->addTotal(__('messages.paid_amount'), currencyFormat($payment->amount,$loan->currency->symbol));
+        // $pdf->addTotal(__('messages.due_amount'), currencyFormat($loan->amount-$loan->totalPaid($loan->id),$loan->currency->symbol), true);
         
 
-        //Add notes
-        $pdf->addParagraph($payment->notes);
+        // //Add notes
+        // $pdf->addParagraph($payment->notes);
 
         //Set footernote
         // $pdf->setFooternote("any");
 
         //Render or Download
         if($request->has('download')) {
-            $pdf->render($payment->payment_number . '.pdf', 'D');
+            $pdf->render($payment_prefix.'-'.$payment->payment_number . '.pdf', 'D');
         } else {
-            $pdf->render($payment->payment_number . '.pdf', 'I');
+            $pdf->render($payment_prefix.'-'.$payment->payment_number . '.pdf', 'I');
         }
     }
 
@@ -322,9 +324,10 @@ class PDFController extends Controller
        
         $loan=LoanRequest::find($request->loan);
         $LoanAmount=$loan->amount;
+        $loanCurrencySymbol=$loan->currency->symbol;
         $user = $request->user();
         $customer=Customer::find($loan->customer_id);
-        $payments=LoanPayment::where('loan_id',$loan->id)->orderBy('id','DESC')->get();
+        $payments=LoanPayment::where('loan_id',$loan->id)->get();
         $currentCompany = $user->currentCompany();
         $payment_prefix = $currentCompany->getSetting('payment_prefix');
         $company = $loan->company;
@@ -372,26 +375,7 @@ class PDFController extends Controller
             ]);
                
             $pdf->addLoan($loan);
-            // $pdf->setHideHeader(false);
-            foreach($payments as $payment){
-        // Set Sub Total
-       
-                $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);
-                $pdf->addTotal(__('messages.payment_#'), $payment_prefix.'-'.$payment->payment_number);
-                $pdf->addTotal(__('messages.payment_method'), $payment->payment_method->name ?? '');
-
-                // // Set Total
-                $pdf->addTotal(__('messages.total'), $loan->amount);
-                $pdf->addTotal(__('messages.paid_amount'), currencyFormat($payment->amount,$loan->currency->symbol));
-                $pdf->addTotal(__('messages.due_amount'), currencyFormat($LoanAmount-$payment->amount,$loan->currency->symbol), true);
-            }
-        
-
-        // //Add notes
-        // $pdf->addParagraph($payment->notes);
-
-        //Set footernote
-        // $pdf->setFooternote("any");
+        $pdf->addPayment($payments,$LoanAmount,$loanCurrencySymbol,$payment_prefix);
 
         //Render or Download
         if($request->has('download')) {
