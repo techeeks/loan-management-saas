@@ -8,6 +8,10 @@ use App\Models\LoanPayment;
 use App\Models\LoanRequest;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Models\Customer;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mails\PaymentToCustomer;
+use Illuminate\Support\Facades\File;;
 
 class LoanPaymentController extends Controller
 {
@@ -69,6 +73,7 @@ class LoanPaymentController extends Controller
         $data["loan_id"]=$request->loan_id;
         $payment=LoanPayment::create($data);
         $loan=LoanRequest::find($request->loan_id);
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
         $paymentDetails=LoanPayment::where('loan_id',$request->loan_id)->sum('amount');
         if($paymentDetails){
            
@@ -79,7 +84,16 @@ class LoanPaymentController extends Controller
            }
         }
         // exit;
-        session()->flash('alert-success', __('messages.payment_added'));
+
+        $path=public_path('uploads/receipts/'. $payment_prefix.'-'.$payment->payment_number.''.Str::random(5).'.pdf');
+        try {
+            Mail::to('hasnainriazkayani1@gmail.com')->send(new PaymentToCustomer($payment,$path));
+            File::delete($path);
+            session()->flash('alert-success', __('messages.payment_added'));
+        } catch (\Throwable $th) {
+            session()->flash('alert-danger','Payment Created Successfully '. __('messages.email_could_not_sent').' '. $th->getMessage());
+        }
+        File::delete($path);
         return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
     }
     public function detail(Request $request)

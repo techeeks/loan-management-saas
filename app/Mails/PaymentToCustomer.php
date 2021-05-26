@@ -8,8 +8,9 @@ use App\Models\Customer;
 use App\Models\LoanPayment;
 use App\Services\PDFService;
 use Illuminate\Support\Str;
+use App\Models\LoanRequest;
 
-class LoanToCustomer extends Mailable
+class PaymentToCustomer extends Mailable
 {
     use SerializesModels;
 
@@ -17,7 +18,6 @@ class LoanToCustomer extends Mailable
      * Public Variables
      */
     public $loan;
-    public $company;
     public $customer;
     public $path;
 
@@ -26,12 +26,11 @@ class LoanToCustomer extends Mailable
      *
      * @return void
      */
-    public function __construct($loan,$path)
+    public function __construct($payment,$path)
     {
-        $this->loan = $loan;
-        $this->company = $loan->company;
-        $this->customer = $loan->customer;
+        $this->payment = $payment;
         $this->path=$path;
+        $this->company=$payment->company;
     }
 
     /**
@@ -41,18 +40,17 @@ class LoanToCustomer extends Mailable
      */
     public function build()
     {
-        $subject = "Loan Request";
-        $mail_content = $this->replaceTags("<p>Dear {customer.display_name},</p><p><br></p><p>The Loan Details are Attached.</p><p><br></p><p>If you have any question, feel free to contact us.</p><p><br></p><p>Thank you,</p><p>{company.name}.</p>");
-        $loan=$this->loan;;
-        $LoanAmount=$loan->amount;
-        $loanCurrencySymbol=$loan->currency->symbol;
+        $subject = "Payment Invoice";
+        $payment =$this->payment;
+        $loan=LoanRequest::find($payment->loan_id);
         $customer=Customer::find($loan->customer_id);
-        $payments=LoanPayment::where('loan_id',$loan->id)->get();
+        $this->customer=$customer;
         $currentCompany =  $this->company;
         $payment_prefix = $currentCompany->getSetting('payment_prefix');
-        $company = $loan->company;
+        $company = $this->company;
         // echo '<pre>',print_r($customer);exit;
-       
+        
+        $mail_content = $this->replaceTags("<p>Dear {customer.display_name},</p><p><br></p><p>The Payment Details are Attached.</p><p><br></p><p>If you have any question, feel free to contact us.</p><p><br></p><p>Thank you,</p><p>{company.name}.</p>");
         //Create a new pdf instance
         $pdf = new PDFService("A4");
 
@@ -63,13 +61,8 @@ class LoanToCustomer extends Mailable
         $pdf->setColor($company->getSetting('payment_color'));
 
         //Set type
-        $pdf->setType(__('messages.loan_receipt_upper_case'));
-        $pdf->setReference($loan->reference_number);
-
-        $pdf->setLoanDate($loan->loan_date);
-
-        //Set  due date
-        $pdf->setDue($loan->return_date);
+        $pdf->setType(__('messages.payment_receipt_upper_case'));
+        $pdf->setReference($payment_prefix.'-'.$payment->payment_number);
 
         // Hide headers
         
@@ -93,19 +86,21 @@ class LoanToCustomer extends Mailable
             $customer->billing->country->name ?? '',
             '',
             ]);
-            $pdf->addLoan($loan);
-            $pdf->addPayment($payments,$LoanAmount,$loanCurrencySymbol,$payment_prefix);
+            $paymentem[]=$payment;
+        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix);
+
             $pdf->render($this->path, 'F');
             return $this->subject($subject)
             ->view('emails.mails.payment_receipt_to_customer')
             ->attach($this->path, [
-                'as' => 'Loan-Statement.pdf',
+                'as' => 'payment-receipt.pdf',
                 'mime' => 'application/pdf',
             ])
             ->with([
                 'subject' => $subject, 
                 'mail_content' => $mail_content,
-                'loan'=>$this->loan
+                'payment'=>$this->payment,
+                'company'=>$this->company,
             ]);
     }
 
