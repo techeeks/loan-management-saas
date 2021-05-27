@@ -84,7 +84,21 @@ class LoanPaymentController extends Controller
            }
         }
         // exit;
-
+        return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
+    }
+    public function detail(Request $request)
+    {
+        $payment=LoanPayment::find($request->payment);
+        return view('application.loan_payments.details', [
+            'payment' => $payment
+        ]);
+    }
+    public function sendEmail(Request $request)
+    {
+        $payment=LoanPayment::find($request->payment);
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $payment_prefix = $currentCompany->getSetting('payment_prefix');
         $path=public_path('uploads/receipts/'. $payment_prefix.'-'.$payment->payment_number.''.Str::random(5).'.pdf');
         try {
             Mail::to('hasnainriazkayani1@gmail.com')->send(new PaymentToCustomer($payment,$path));
@@ -95,12 +109,5 @@ class LoanPaymentController extends Controller
         }
         File::delete($path);
         return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
-    }
-    public function detail(Request $request)
-    {
-        $payment=LoanPayment::find($request->payment);
-        return view('application.loan_payments.details', [
-            'payment' => $payment
-        ]);
     }
 }

@@ -103,17 +103,8 @@ class LoanRequestController extends Controller
         $data["company_id"]=$currentCompany->id;
         $data["status"]="Pending";
         $loan=LoanRequest::create($data);
-        $customer=Customer::where('id',$loan->customer_id);
-        $path=public_path('uploads/receipts/'.$loan->reference_number.''.Str::random(5).'.pdf');
-        try {
-            Mail::to('hasnainriazkayani1@gmail.com')->send(new LoanToCustomer($loan,$path));
-            session()->flash('alert-success', __('messages.loan_added'));
-        } catch (\Throwable $th) {
-            
-            session()->flash('alert-danger','Loan Created Successfully '. __('messages.email_could_not_sent').' '. $th->getMessage());
-        }
-        unlink($path);
         // Log::debug(Mail::failures());exit;
+        session()->flash('alert-success', __('messages.loan_added'));
         return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
     }
     public function delete(Request $request)
@@ -132,5 +123,22 @@ class LoanRequestController extends Controller
         $loan=LoanRequest::find($request->loan); 
         // echo '<pre>',print_r($loan);exit;
         return view('application.loan_requests.detail',compact('loan'));
+    }
+    public function sentEmail(Request $request)
+    {
+        $user = $request->user();
+        $currentCompany = $user->currentCompany();
+        $loan=LoanRequest::find($request->loan); 
+        // echo '<pre>',print_r($loan->customer);exit;
+        $path=public_path('uploads/receipts/'.$loan->reference_number.''.Str::random(5).'.pdf');
+        try {
+            Mail::to($loan->customer->email)->send(new LoanToCustomer($loan,$path));
+            session()->flash('alert-success', "Email Sent Successfully");
+        } catch (\Throwable $th) {
+            
+            session()->flash('alert-danger',__('messages.email_could_not_sent').' '. $th->getMessage());
+        }
+        unlink($path);
+        return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
     }
 }

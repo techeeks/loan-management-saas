@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -146,6 +147,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::post('{id}/update', 'LoanRequestController@update' )->name('loan.requests.update');
         Route::get('{loan}/detail', 'LoanRequestController@detail' )->name('loan.requests.details');
         Route::get('add-new', 'LoanRequestController@add' )->name('loan.requests.create');
+        Route::get('{loan}/sent-mail','LoanRequestController@sentEmail')->name('loan.requests.sendemail');
     });
     // Estimates
     Route::get('/estimates/create', 'EstimateController@create')->name('estimates.create');
@@ -167,6 +169,7 @@ Route::group(['namespace' => 'Application', 'prefix' => '/{company_uid}', 'middl
         Route::post('{payment}/edit', 'LoanPaymentController@update')->name('loan.payments.update');
         Route::get('{payment}/delete', 'LoanPaymentController@delete')->name('loan.payments.delete');
         Route::get('{payment}/detail', 'LoanPaymentController@detail' )->name('loan.payments.details');
+        Route::get('{payment}/send-mail', 'LoanPaymentController@sendEmail' )->name('loan.payments.sendemail');
         
     });
     Route::get('/payments', 'PaymentController@index')->name('payments');

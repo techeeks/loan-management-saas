@@ -30,7 +30,9 @@
                             {{ currencyFormat($payment->amount, $payment->loan->currency->symbol) }}
                         </td>
                         <td>
-                           <a href="{{ route('loan.payments.details', ['payment' => $payment->id,'company_uid' => $currentCompany->uid]) }}">View</a>
+                           <a href="{{ route('loan.payments.details', ['payment' => $payment->id,'company_uid' => $currentCompany->uid]) }}"><i class="material-icons icon-16pt">arrow_forward</i></a>
+                           <a href="{{ route('loan.payments.sendemail', ['payment' => $payment->id,'company_uid' => $currentCompany->uid]) }}"><i class="material-icons icon-16pt">email</i></a>
+                           
                         </td>
                     </tr>
                 @endforeach

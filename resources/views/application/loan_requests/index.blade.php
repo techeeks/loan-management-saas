@@ -131,6 +131,7 @@
                            
                           
                             <a href="{{ route('loan.requests.details', ['loan' => $loan->id,'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link"><i class="material-icons icon-16pt">arrow_forward</i></a>
+                            
                             @if($loan->status!="Paid")
                             
                             <a href="{{ route('loan.requests.edit', ['id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
@@ -142,7 +143,6 @@
                             <a href="{{ route('loan.payments.create', ['loan_id' => $loan->id, 'company_uid' => $currentCompany->uid]) }}" class="btn btn-sm btn-link">
                                 <i class="material-icons icon-16pt">payment</i>
                             </a>
-
                             @endif
                         </td>
                     </tr>
