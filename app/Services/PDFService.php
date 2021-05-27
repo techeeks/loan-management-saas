@@ -228,7 +228,7 @@ class PDFService extends PDF_ImageAlpha
         $this->loan["balance"]=currencyFormat($data->amount-$data->totalPaid($data->id),$data->currency->symbol);
         $this->loan['amount']=currencyFormat($data->amount,$data->currency->symbol);
     }
-    function addPayment($data,$loanedAmount,$loanCurrencySymbol,$payment_prefix)
+    function addPayment($data,$loanedAmount,$loanCurrencySymbol,$payment_prefix,$totalPaid='')
     {
         $paymentsArr=array();
         $remaning=0;
@@ -236,6 +236,9 @@ class PDFService extends PDF_ImageAlpha
             $remaning=$remaning+$pay->amount;
             $paymentsArr["total_amount"]=currencyFormat($loanedAmount,$loanCurrencySymbol);
             $paymentsArr["balance"]=currencyFormat($loanedAmount-$remaning,$loanCurrencySymbol);
+            if($totalPaid!=''){
+                $paymentsArr["balance"]=currencyFormat($loanedAmount-$totalPaid,$loanCurrencySymbol);
+            }
             $paymentsArr["amount"]=currencyFormat($pay->amount,$loanCurrencySymbol);
             $paymentsArr["payment_number"]=$payment_prefix.'-'.$pay->payment_number;
             $paymentsArr["payment_method"]=$pay->payment_method;

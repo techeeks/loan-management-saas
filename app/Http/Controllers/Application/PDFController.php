@@ -291,7 +291,7 @@ class PDFController extends Controller
             '',
             ]);
             $paymentem[]=$payment;
-        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix);
+        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix,$loan->totalPaid($loan->id));
             // $pdf->setHideHeader(false);
         // Set Sub Total
         // $pdf->addTotal(__('messages.payment_date'), $payment->payment_date);

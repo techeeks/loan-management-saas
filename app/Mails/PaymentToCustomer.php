@@ -87,7 +87,7 @@ class PaymentToCustomer extends Mailable
             '',
             ]);
             $paymentem[]=$payment;
-        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix);
+        $pdf->addPayment($paymentem,$loan->amount,$loan->currency->symbol,$payment_prefix,$loan->totalPaid($loan->id));
 
             $pdf->render($this->path, 'F');
             return $this->subject($subject)
