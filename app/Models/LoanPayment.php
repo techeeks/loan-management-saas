@@ -23,6 +23,10 @@ class LoanPayment extends Model
         'notes',
         'private_notes',
     ]; 
+    public function loans()
+    {
+        return $this->hasMany('App\Models\LoanRequest','id','loan_id');
+    }
     public function loan()
     {
         return $this->belongsTo(LoanRequest::class);

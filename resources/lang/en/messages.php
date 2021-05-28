@@ -128,6 +128,7 @@ return [
     'from_date'=>"From Date",
     'to_date'=>"To Date",
     'reset_filters'=>'Reset Filters',
+    'loan'=>"Loan",
     'from' => 'From',
     'to' => 'To',
     'start_date' => 'Start Date',

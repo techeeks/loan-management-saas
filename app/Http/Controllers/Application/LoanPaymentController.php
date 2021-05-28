@@ -19,17 +19,42 @@ class LoanPaymentController extends Controller
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $query=LoanPayment::findByCompany($currentCompany->id)->orderBy('id','DESC');
+        $query=LoanPayment::query();
+        $customers=Customer::all()->sortBy('display_name');
+        $loans=LoanRequest::all()->sortByDesc('id');
         // Query Invoices by Company and Tab
         $payment_prefix = $currentCompany->getSetting('payment_prefix');
         // Apply Filters and Paginate
+        if(isset($request->customer) && !empty($request->customer))
+        {
+            $cust=$request->customer;
+            $query->whereHas('loans',function($q) use ($cust){
+                $q->where('customer_id',$cust);
+            });
+        }
+        if(isset($request->from_date) && !empty($request->from_date))
+        {
+            $query->where('payment_date','>=',$request->from_date);
+        }
+        if(isset($request->to_date) && !empty($request->to_date))
+        {
+            $query->where('payment_date','<=',$request->to_date);
+        }
+        if(isset($request->loan) && !empty($request->loan))
+        {
+            $query->where('loan_id','=',$request->loan);
+        }
+        $query->orderBy('id',"DESC");
         $payments = QueryBuilder::for($query)
             ->paginate()
             ->appends(request()->query());
+        // echo '<pre>',print_r($payments);exit;
             return view('application.loan_payments.index', [
                 'payments' => $payments,
                 'payment_prefix'=>$payment_prefix,
                 'currentCompany'=>$currentCompany,
+                'customers'=>$customers,
+                'loans'=>$loans,
         ]);
     }
     public function create(Request $request)

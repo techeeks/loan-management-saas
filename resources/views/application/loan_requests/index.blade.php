@@ -51,6 +51,17 @@
                     <input name="to_date" type="text" class="form-control input"  data-toggle="flatpickr" data-flatpickr-default-date="{{  Request::get('to_date') }}"  required>
                 </div>
             </div>
+            <div class="col-md-4 pr-4 pl-4">
+                <div class="form-group">
+                    <label for="status">{{ __('messages.status') }}</label>
+                    <select  name="status" data-toggle="select" class="form-control select2-hidden-accessible" data-select2-id="status" required>
+                        <option disabled selected>{{ __('messages.status') }}</option>
+                            <option {{  "Pending"==Request::get('status')?'selected':'' }} value="Pending">Pending</option>
+                            <option {{ "Overdue"==Request::get('status')?'selected':'' }} value="Overdue">Overdue</option>
+                            <option {{  "Paid"==Request::get('status')?'selected':'' }} value="Paid">Paid</option>
+                    </select>
+                </div>
+            </div>
     
             <div class="col-12 text-center float-right mt-3">
                 <button type="submit" class="btn btn-primary save_form_button">{{ __('messages.search') }}</button>

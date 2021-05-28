@@ -36,6 +36,10 @@ class LoanRequestController extends Controller
         {
             $query->where('loan_date','<=',$request->to_date);
         }
+        if(isset($request->status) && !empty($request->status))
+        {
+            $query->where('status','=',$request->status);
+        }
         $query->orderBy('id',"DESC");
         // echo $query->toSql();exit;
         // Query Invoices by Company and Tab
