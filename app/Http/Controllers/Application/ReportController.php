@@ -70,7 +70,7 @@ class ReportController extends Controller
     {
         $user = $request->user();
         $currentCompany = $user->currentCompany();
-        $query=LoanRequest::findByCompany($currentCompany->id)->where('return_date','<',date('Y-m-d'))->orderBy('return_date','DESC');
+        $query=LoanRequest::findByCompany($currentCompany->id)->where('return_date','<',date('Y-m-d'))->where('status','!=','Paid')->orderBy('return_date','DESC');
         // Query Invoices by Company and Tab
 
         // Apply Filters and Paginate

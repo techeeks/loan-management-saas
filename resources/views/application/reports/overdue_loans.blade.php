@@ -62,9 +62,27 @@
                         {{ $loan->return_date}}
                     </td>
                     <td>
+                        @if($loan->status!="Overdue" && $loan->status!="Paid")
+                            @if(strtotime(date('Y-m-d'))>strtotime($loan->return_date))
+                                @php 
+                                    $loan->overdue();
+                                    $loan->status="Overdue";
+                                @endphp
+                            @endif
+                        @endif
+                        @if($loan->status == 'Pending')
+                        <div class="badge badge-warning fs-0-9rem">
+                            {{ $loan->status }}
+                        </div>
+                        @elseif($loan->status == 'Overdue')
                         <div class="badge badge-danger fs-0-9rem">
                             {{ $loan->status }}
                         </div>
+                        @elseif($loan->status == 'Paid')
+                        <div class="badge badge-success fs-0-9rem">
+                            {{ $loan->status }}
+                        </div>
+                        @endif
                     </td>
                     <td class="h6  d-inline-flex">
 
