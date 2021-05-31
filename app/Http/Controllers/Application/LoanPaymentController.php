@@ -44,7 +44,10 @@ class LoanPaymentController extends Controller
         {
             $query->where('loan_id','=',$request->loan);
         }
-        $query->orderBy('id',"DESC");
+        $query->whereHas('loans',function($q){
+            $q->where('is_deleted',NULL);
+        });
+        $query->where('company_id',$currentCompany->id)->orderBy('id',"DESC");
         $payments = QueryBuilder::for($query)
             ->paginate()
             ->appends(request()->query());
@@ -131,7 +134,7 @@ class LoanPaymentController extends Controller
             File::delete($path);
             session()->flash('alert-success', __('messages.payment_added'));
         } catch (\Throwable $th) {
-            session()->flash('alert-danger','Payment Created Successfully '. __('messages.email_could_not_sent').' '. $th->getMessage());
+            session()->flash('alert-danger', __('messages.email_could_not_sent').' '. $th->getMessage());
         }
         File::delete($path);
         return redirect()->route('loan.payments', ['company_uid' => $currentCompany->uid]);
