@@ -125,8 +125,9 @@ class LoanPaymentController extends Controller
         $currentCompany = $user->currentCompany();
         $payment_prefix = $currentCompany->getSetting('payment_prefix');
         $path=public_path('uploads/receipts/'. $payment_prefix.'-'.$payment->payment_number.''.Str::random(5).'.pdf');
+        // echo $payment->loan->customer->email;exit;
         try {
-            Mail::to('hasnainriazkayani1@gmail.com')->send(new PaymentToCustomer($payment,$path));
+            Mail::to($payment->loan->customer->email)->send(new PaymentToCustomer($payment,$path));
             File::delete($path);
             session()->flash('alert-success', __('messages.payment_added'));
         } catch (\Throwable $th) {
