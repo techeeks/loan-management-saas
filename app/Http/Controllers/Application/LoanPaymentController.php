@@ -132,7 +132,7 @@ class LoanPaymentController extends Controller
         try {
             Mail::to($payment->loan->customer->email)->send(new PaymentToCustomer($payment,$path));
             File::delete($path);
-            session()->flash('alert-success', __('messages.payment_added'));
+            session()->flash('alert-success',"Email Sent Successfullly");
         } catch (\Throwable $th) {
             session()->flash('alert-danger', __('messages.email_could_not_sent').' '. $th->getMessage());
         }
