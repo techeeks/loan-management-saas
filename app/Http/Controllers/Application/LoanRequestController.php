@@ -11,7 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Mails\LoanToCustomer;
 use App\Models\Customer;
 use App\Models\LoanRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 
@@ -41,10 +40,6 @@ class LoanRequestController extends Controller
             $query->where('status','=',$request->status);
         }
         $query->orderBy('id',"DESC");
-        // echo $query->toSql();exit;
-        // Query Invoices by Company and Tab
-
-        // Apply Filters and Paginate
         $loans = QueryBuilder::for($query)
             ->paginate()
             ->appends(request()->query());
@@ -69,7 +64,6 @@ class LoanRequestController extends Controller
 
         $loan = LoanRequest::findOrFail($request->id);
         $customers=  $currentCompany->customers;
-        // echo '<pre>',print_r($loan);exit;
         return view('application.loan_requests.edit',compact('customers','loan'));
     }
     public function update(Request $request)
@@ -107,7 +101,6 @@ class LoanRequestController extends Controller
         $data["company_id"]=$currentCompany->id;
         $data["status"]="Pending";
         $loan=LoanRequest::create($data);
-        // Log::debug(Mail::failures());exit;
         session()->flash('alert-success', __('messages.loan_added'));
         return redirect()->route('loan.requests', ['company_uid' => $currentCompany->uid]);
     }
@@ -125,7 +118,6 @@ class LoanRequestController extends Controller
         $user = $request->user();
         $currentCompany = $user->currentCompany();
         $loan=LoanRequest::find($request->loan); 
-        // echo '<pre>',print_r($loan);exit;
         return view('application.loan_requests.detail',compact('loan'));
     }
     public function sentEmail(Request $request)
@@ -133,7 +125,6 @@ class LoanRequestController extends Controller
         $user = $request->user();
         $currentCompany = $user->currentCompany();
         $loan=LoanRequest::find($request->loan); 
-        // echo '<pre>',print_r($loan->customer);exit;
         $path=public_path('uploads/receipts/'.$loan->reference_number.''.Str::random(5).'.pdf');
         try {
             Mail::to($loan->customer->email)->send(new LoanToCustomer($loan,$path));
