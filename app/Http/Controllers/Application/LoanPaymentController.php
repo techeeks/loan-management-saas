@@ -45,7 +45,7 @@ class LoanPaymentController extends Controller
             $query->where('loan_id','=',$request->loan);
         }
         $query->whereHas('loans',function($q){
-            $q->where('is_deleted',NULL);
+            $q->where('deleted_at',NULL);
         });
         $query->where('company_id',$currentCompany->id)->orderBy('id',"DESC");
         $payments = QueryBuilder::for($query)
